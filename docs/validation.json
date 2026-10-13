@@ -35,8 +35,8 @@
   },
   "unit_tests": "python -B -m unittest discover -s tests -v",
   "not_checked": [
-    "Fresh ComfyUI install via setup.bat --install-dependencies",
     "Browser drag-and-drop of GUI workflows"
   ],
-  "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed"
+  "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed",
+  "fresh_install": "docs/fresh_install_validation.json"
 }

@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-13",
+  "comfyui": {
+    "source": "git clone https://github.com/Comfy-Org/ComfyUI.git",
+    "commit": "8010b48d",
+    "version": "0.39.0+49"
+  },
+  "python": "Dedicated venv; PyTorch 2.14.0+cu130 and other existing packages referenced read-only from the developer's standard venv; ComfyUI 0.39 requirements (comfy-kitchen 0.2.37, comfy-aimdo 0.5.6, frontend/templates/docs) installed into the dedicated venv. The standard venv was unchanged.",
+  "setup": "setup.bat \"COMFY_ROOT\" --install-dependencies from a separate checkout of this repository; Python auto-detected (COMFY_ROOT\\..\\.venv); X2 Stream downloaded at eb148a3 and byte-identical to the measured code; package and sample image installed; 5 models found through extra_model_paths.yaml",
+  "setup_fix": "The first attempt exposed that an option in the second position was taken as the Python path; fixed in ebf0d33 before this run",
+  "server": "CUDA_VISIBLE_DEVICES=0, --disable-pinned-memory, new process",
+  "examples_run_unchanged": [
+    {
+      "example": "00_prepare_x2",
+      "prompt_id": "aeb39fd6-59c1-4ede-9625-241f564a9b96",
+      "status": "success",
+      "generation_seconds": 9.507
+    },
+    {
+      "example": "fl2va_audiofirst_05s",
+      "prompt_id": "924e62e6-acd1-401f-835e-529513382319",
+      "status": "success",
+      "generation_seconds": 78.053
+    },
+    {
+      "example": "fl2va_audiofirst_10s",
+      "prompt_id": "872fe34f-eb31-4d2b-9d5b-7dd806b99bb4",
+      "status": "success",
+      "generation_seconds": 117.094
+    },
+    {
+      "example": "fl2va_audiofirst_14s",
+      "prompt_id": "92f3ac15-ddf3-4c39-ac1b-511c51e930c8",
+      "status": "success",
+      "generation_seconds": 164.48
+    }
+  ],
+  "outputs": {
+    "05s": "1088x1920, 124 frames, AAC 32 kHz, full decode",
+    "10s": "1088x1920, 243 frames, AAC 32 kHz, full decode",
+    "14s": "1088x1920, 345 frames, AAC 32 kHz, full decode"
+  },
+  "audio_lock_max_abs_diff": [
+    1.19e-07,
+    2.38e-07,
+    2.38e-07
+  ],
+  "compared_with_measured_runs": {
+    "decoded_audio": "identical for 5, 10 and 14 s",
+    "video_psnr_db": {
+      "05s": 25.28,
+      "10s": 24.6,
+      "14s": 24.78
+    },
+    "note": "Video differs at the same level as run-to-run variation on ComfyUI 0.38"
+  },
+  "timing_note": "5 s includes first model loading in a new process; not used for the README table",
+  "not_checked": [
+    "Browser drag-and-drop of GUI workflows",
+    "Fully empty Python environment"
+  ]
+}

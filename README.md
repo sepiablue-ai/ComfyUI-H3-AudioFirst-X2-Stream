@@ -129,7 +129,7 @@ ComfyUI input validation and GUI/API round-trips pass for all examples; tests co
 "C:\ComfyUI\.venv\Scripts\python.exe" -B -m unittest discover -s tests -v
 ```
 
-A fresh ComfyUI install through `--install-dependencies` and browser drag-and-drop were not tested.
+A fresh clone of ComfyUI 0.39.0+49 was set up from a separate checkout of this repo with `setup.bat "COMFY_ROOT" --install-dependencies`; X2 preparation and the 5, 10 and 14 s examples then ran unchanged and all succeeded, with decoded audio identical to the measured runs on 0.38.0. PyTorch and other existing packages were referenced from an existing venv and only the 0.39.0 additions were installed into the dedicated venv, so this is not an install from a completely empty Python environment. Browser drag-and-drop was not tested. See [docs/fresh_install_validation.json](docs/fresh_install_validation.json).
 
 ## License
 
