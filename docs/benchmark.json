@@ -205,54 +205,54 @@
     },
     {
       "case": "14s_singing",
-      "note": "One run per method after a 5 s warmup; 640x928 sampling for a 1248x1824 source; 022 on 2026-10-12, AudioFirst on 2026-10-13",
+      "note": "One run per method in one session after a 5 s warmup on 2026-10-13; 1248x1824 source resized to 657x960 and center-cropped to 544x960; this session's audio pass ran at about 1.4 s/step instead of 1.2 s",
       "runs": [
         {
-          "run_id": "sing14_022",
+          "run_id": "sing544_022",
           "method": "022",
-          "prompt_id": "e729f44b-3b34-4c6e-a8be-a36f048413eb",
-          "generation_seconds": 171.961,
+          "prompt_id": "372aa47d-0df6-45df-ba75-26baf98de95d",
+          "generation_seconds": 153.209,
           "stages_seconds": {
-            "conditioning": 8.794,
-            "video_sampler": 129.584,
-            "x2_decode_save": 31.41
+            "conditioning": 8.596,
+            "video_sampler": 111.672,
+            "x2_decode_save": 30.849
           },
           "frames": 345,
           "sampling_size": [
-            640,
-            928
+            544,
+            960
           ],
           "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881",
-          "workflow_sha256": "3d56273fd047240e8d73cf20808a4e0bc04c85ea900f478c95b35e1b1425891f",
-          "video_sha256": "2be05bdcf88238666d73c677be2638b4210f952d86e2611d0d86a18cb55a1bfe"
+          "workflow_sha256": "1344b40c1799d2bf94f0f13180710d6691eca7fca0535ee03556d60b1d1820e3",
+          "video_sha256": "5b20f87ff6d940cd9e239c2a6a367782569b980016bebcc20bebe2d951f27756"
         },
         {
-          "run_id": "sing14_a8",
+          "run_id": "sing544_af8",
           "method": "audiofirst",
-          "prompt_id": "fa76e3f4-4260-4d89-b13c-1e030ee42c31",
-          "generation_seconds": 184.19,
+          "prompt_id": "6e533a36-abd3-42bc-93fc-04d5b2709da2",
+          "generation_seconds": 169.592,
           "stages_seconds": {
-            "conditioning": 8.35,
-            "video_sampler": 127.473,
-            "x2_decode_save": 30.925,
-            "audio_sampler": 15.433
+            "conditioning": 8.326,
+            "video_sampler": 109.395,
+            "x2_decode_save": 30.981,
+            "audio_sampler": 18.718
           },
           "frames": 345,
           "sampling_size": [
-            640,
-            928
+            544,
+            960
           ],
           "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881",
-          "workflow_sha256": "e96f0726d66c8734dc05f14a71ab8e600c3b1ff8da0c79c54ef2acbb70acfbf5",
-          "video_sha256": "939f1f1e595a22fb9401bd84e707d9e3315b3f5e9a0224850281a309883e0441"
+          "workflow_sha256": "308ac6804757be90bb516bafe47db18deb17d2e968e87b223ad0a8880bd81197",
+          "video_sha256": "6a88fdc3cf7804bf1732f0abeb6ce39185a96abcc60cf46018025cc9a25db231"
         }
       ],
       "mean_seconds": {
-        "022": 171.961,
-        "audiofirst": 184.19
+        "022": 153.209,
+        "audiofirst": 169.592
       },
-      "audiofirst_minus_022_seconds": 12.229,
-      "audiofirst_minus_022_percent": 7.1
+      "audiofirst_minus_022_seconds": 16.383,
+      "audiofirst_minus_022_percent": 10.7
     }
   ],
   "audio_step_selection": {
@@ -438,6 +438,45 @@
         "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881",
         "workflow_sha256": "b9177adf879c0315407c0d3fe1a8bfb62cf546a83c0f9f787800702adb59424d",
         "video_sha256": "789c851df2f1546490b9ca5fc91f65192a3115b1a24c78dfd93e007f817165e5"
+      },
+      {
+        "run_id": "sing14_022",
+        "method": "022_640x928",
+        "prompt_id": "e729f44b-3b34-4c6e-a8be-a36f048413eb",
+        "generation_seconds": 171.961,
+        "stages_seconds": {
+          "conditioning": 8.794,
+          "video_sampler": 129.584,
+          "x2_decode_save": 31.41
+        },
+        "frames": 345,
+        "sampling_size": [
+          640,
+          928
+        ],
+        "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881",
+        "workflow_sha256": "3d56273fd047240e8d73cf20808a4e0bc04c85ea900f478c95b35e1b1425891f",
+        "video_sha256": "2be05bdcf88238666d73c677be2638b4210f952d86e2611d0d86a18cb55a1bfe"
+      },
+      {
+        "run_id": "sing14_a8",
+        "method": "audiofirst_640x928",
+        "prompt_id": "fa76e3f4-4260-4d89-b13c-1e030ee42c31",
+        "generation_seconds": 184.19,
+        "stages_seconds": {
+          "conditioning": 8.35,
+          "video_sampler": 127.473,
+          "x2_decode_save": 30.925,
+          "audio_sampler": 15.433
+        },
+        "frames": 345,
+        "sampling_size": [
+          640,
+          928
+        ],
+        "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881",
+        "workflow_sha256": "e96f0726d66c8734dc05f14a71ab8e600c3b1ff8da0c79c54ef2acbb70acfbf5",
+        "video_sha256": "939f1f1e595a22fb9401bd84e707d9e3315b3f5e9a0224850281a309883e0441"
       }
     ],
     "eight_vs_six_cost": "About 2.5 s from per-step audio timing on 2026-10-13 (1.22 s/step); cross-day totals differ by less than day-to-day variation",

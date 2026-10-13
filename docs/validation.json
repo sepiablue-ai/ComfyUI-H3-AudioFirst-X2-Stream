@@ -18,7 +18,7 @@
     "audio_lock_max_abs_diff": 2.384185791015625e-07,
     "five_second_repeat_decoded_audio_identical": true,
     "full_decode": true,
-    "singing_run": "sing14_a8 used the experiment node names with identical settings, not the packaged example"
+    "singing_run": "sing544_af8 used the packaged 14 s example with only image, prompt, crop and output name changed"
   },
   "package_generation_check_6_steps": {
     "example": "examples/api/fl2va_audiofirst_05s.api.json at 6 steps (output prefix changed only)",

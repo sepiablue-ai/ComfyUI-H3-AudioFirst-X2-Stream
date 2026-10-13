@@ -15,7 +15,7 @@ Left is 022 (before), right is AudioFirst (after). The first half plays the left
 | 14 s, five Japanese dialogue lines | [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
 | 14 s, singing in English while playing guitar | [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
 
-The singing sample uses a 1248 × 1824 image generated at 640 × 928 to keep its aspect ratio (the bundled examples use 544 × 960).
+The singing sample resizes a 1248 × 1824 image to 657 × 960 without changing its aspect ratio and center-crops it to 544 × 960, the same resolution as the bundled examples.
 
 ## Generation time
 
@@ -26,9 +26,9 @@ Measured on an RTX 4070 12 GB. 022 and AudioFirst use the same image, prompt and
 | 5 s | 124 | 60.8 s (1 min 0.8 s) | 71.7 s (1 min 11.7 s) | +11.0 s (+18.0%) |
 | 10 s | 243 | 105.7 s (1 min 45.7 s) | 117.1 s (1 min 57.1 s) | +11.4 s (+10.8%) |
 | 14 s | 345 | 153.8 s (2 min 33.8 s) | 165.1 s (2 min 45.1 s) | +11.3 s (+7.4%) |
-| 14 s singing (640 × 928) | 345 | 172.0 s (2 min 52.0 s) | 184.2 s (3 min 4.2 s) | +12.2 s (+7.1%) |
+| 14 s singing | 345 | 153.2 s (2 min 33.2 s) | 169.6 s (2 min 49.6 s) | +16.4 s (+10.7%) |
 
-5 s is the mean of two runs per method; the others are single runs. 022 was measured on 2026-10-11/12 and AudioFirst on 2026-10-13, so the values include a few seconds of day-to-day variation. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
+5 s is the mean of two runs per method; the others are single runs. For dialogue, 022 was measured on 2026-10-11 and AudioFirst on 2026-10-13, so the values include a few seconds of day-to-day variation. Both singing runs were measured in one session on 2026-10-13; its audio pass was slower than in other sessions (about 1.4 s per step instead of 1.2 s), so that difference is larger. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
 
 The 32 × 32 audio pass has little compute; transferring model weights that do not fit in 12 GB is the likely main cost (not profiled). The 8-step audio pass took about 15 s regardless of video length, so the added time stays at roughly 11–12 s and becomes a smaller share for longer videos.
 
@@ -121,7 +121,7 @@ As in native H3 first-frame handling, the audio-pass keyframe is the input image
 
 [docs/benchmark.json](docs/benchmark.json) records each run's prompt_id, SHA-256 of prompt, workflow and video, stage times and how the step count was chosen.
 
-The 5, 10 and 14 s AudioFirst values come from running the packaged examples with only the output name changed (the singing run used the experiment nodes with the same settings). The two 5 s runs produced identical decoded audio, and every run passed the audio-lock check. A 6-step check made when the nodes were renamed for distribution gave audio identical to the experiment and video differing by the same amount the experiment runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup. See [docs/validation.json](docs/validation.json).
+The 5, 10 and 14 s AudioFirst values come from running the packaged examples with only the output name changed (the singing run changed only the image, prompt and crop of the 14 s example). The two 5 s runs produced identical decoded audio, and every run passed the audio-lock check. A 6-step check made when the nodes were renamed for distribution gave audio identical to the experiment and video differing by the same amount the experiment runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup. See [docs/validation.json](docs/validation.json).
 
 ComfyUI input validation and GUI/API round-trips pass for all examples; tests cover repeated setup, refusal to overwrite differing files and the example settings.
 
