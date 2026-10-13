@@ -1,0 +1,408 @@
+{
+  "901": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "fl2va_case01_no_text_948x1659.png"
+    },
+    "_meta": {
+      "title": "First Frame"
+    }
+  },
+  "902": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "901",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 549,
+      "height": 960,
+      "crop": "disabled"
+    },
+    "_meta": {
+      "title": "ImageScale"
+    }
+  },
+  "903": {
+    "class_type": "ImageCrop",
+    "inputs": {
+      "image": [
+        "902",
+        0
+      ],
+      "width": 544,
+      "height": 960,
+      "x": 2,
+      "y": 0
+    },
+    "_meta": {
+      "title": "ImageCrop"
+    }
+  },
+  "128": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    },
+    "_meta": {
+      "title": "Text Encoder"
+    }
+  },
+  "119": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+    },
+    "_meta": {
+      "title": "Video VAE"
+    }
+  },
+  "120": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "_meta": {
+      "title": "Audio VAE"
+    }
+  },
+  "920": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "h3_x2_stream\\MiniMax-H3-X2-Detail-v1-decoder-int8-convrot.safetensors"
+    },
+    "_meta": {
+      "title": "X2 Detail VAE (decoder INT8)"
+    }
+  },
+  "127": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "MATLOW Fused Turbo INT8 ConvRot"
+    }
+  },
+  "140": {
+    "class_type": "H3X2ChunkFeedForward",
+    "inputs": {
+      "model": [
+        "127",
+        0
+      ],
+      "chunks": 8,
+      "seq_threshold": 4096
+    },
+    "_meta": {
+      "title": "H3 Chunk FeedForward (8 chunks)"
+    }
+  },
+  "142": {
+    "class_type": "MiniMaxH3SigmaShift",
+    "inputs": {
+      "model": [
+        "900",
+        0
+      ],
+      "shift_video": 12.0,
+      "shift_audio": 3.0
+    },
+    "_meta": {
+      "title": "Sigma Shift 12/3"
+    }
+  },
+  "900": {
+    "class_type": "BlockSparseAttention",
+    "inputs": {
+      "model": [
+        "140",
+        0
+      ],
+      "selection": "sla",
+      "selection.keep_percent": 5.0,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "dense_blocks": "",
+      "min_tokens": 12288,
+      "extra_tokens": 256,
+      "sink_conditioning": "exact_kv_and_rows",
+      "verbose": true
+    },
+    "_meta": {
+      "title": "SLA 5%"
+    }
+  },
+  "131": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "128",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "prompt": "For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.\n\nintegrated_multimodal_description: [Shot 1] Clean 2D anime illustration. Begin with the exact young woman, hairstyle, white shirt, dark tie, pleated skirt, tights, seated pose, classroom window, and daylight shown in <Picture 1>. In one continuous shot she lowers her legs from the desk, plants her feet, and stands up. The young woman (S1), in a clear, gentle Japanese voice with a bright, slightly nervous tone and a natural conversational pace, looks toward the camera and says: <d>[Japanese] ねえ、ちょっとだけ聞いてくれる？</d> She takes a few steps toward the camera while maintaining her identity, outfit, and the classroom setting, and continues softly with a shy smile: <d>[Japanese] ずっと言えなかったんだけど、</d> As she reaches a closer framing, she looks directly into the lens, makes a small finger-heart with her thumb and index finger beside her face, and says with rising excitement: <d>[Japanese] 君のことが、好きなの！</d> She lowers her hand, her cheeks flush, and she glances away to the side, covering her mouth lightly with her fingertips, then says quickly in a flustered, embarrassed voice: <d>[Japanese] あ、今の、聞かなかったことにしてもいいよ？</d> She takes a small breath, turns her face back toward the lens, lowers her hand from her mouth, and clasps both hands behind her back. Leaning slightly forward with a gentle, hopeful smile, she says in a calmer, sincere voice: <d>[Japanese] でも、返事は、ちゃんと聞かせてね。</d> Her mouth moves in sync with every exact line, and she holds the warm smile while looking into the lens at the end.\n\noverall_soundscape: Light classroom ambience continues under the soft sounds of her feet landing and footsteps approaching the camera. Her clothes rustle gently as she stands, raises her hand, and moves her arms, with a small nervous breath between her lines.\n\nnon_diegetic_music: N/A",
+      "width": 544,
+      "height": 960,
+      "length": 345,
+      "first_frame": [
+        "903",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "MiniMax H3 Image to Video"
+    }
+  },
+  "129": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 43
+    },
+    "_meta": {
+      "title": "Seed 43"
+    }
+  },
+  "135": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    },
+    "_meta": {
+      "title": "res_multistep"
+    }
+  },
+  "201": {
+    "class_type": "H3AudioFirstConditioning",
+    "inputs": {
+      "positive": [
+        "131",
+        0
+      ],
+      "image": [
+        "903",
+        0
+      ],
+      "vae": [
+        "119",
+        0
+      ],
+      "length": 345
+    },
+    "_meta": {
+      "title": "Audio pass conditioning (32x32)"
+    }
+  },
+  "202": {
+    "class_type": "MiniMaxH3SigmaShift",
+    "inputs": {
+      "model": [
+        "140",
+        0
+      ],
+      "shift_video": 12.0,
+      "shift_audio": 3.0
+    },
+    "_meta": {
+      "title": "Audio pass sigma shift"
+    }
+  },
+  "203": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "202",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 6,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "Audio pass scheduler (6 steps)"
+    }
+  },
+  "204": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "202",
+        0
+      ],
+      "conditioning": [
+        "201",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Audio pass guider"
+    }
+  },
+  "205": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "204",
+        0
+      ],
+      "sampler": [
+        "135",
+        0
+      ],
+      "sigmas": [
+        "203",
+        0
+      ],
+      "latent_image": [
+        "201",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "Audio pass sampler"
+    }
+  },
+  "121": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "205",
+        0
+      ],
+      "vae": [
+        "120",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Decode pass-1 audio"
+    }
+  },
+  "206": {
+    "class_type": "H3AudioFirstLockAudio",
+    "inputs": {
+      "video_latent": [
+        "131",
+        1
+      ],
+      "audio_latent": [
+        "205",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Lock finished audio"
+    }
+  },
+  "124": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "142",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 4,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "Video pass scheduler (4 steps)"
+    }
+  },
+  "126": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "142",
+        0
+      ],
+      "conditioning": [
+        "131",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "BasicGuider"
+    }
+  },
+  "125": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "129",
+        0
+      ],
+      "guider": [
+        "126",
+        0
+      ],
+      "sampler": [
+        "135",
+        0
+      ],
+      "sigmas": [
+        "124",
+        0
+      ],
+      "latent_image": [
+        "206",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Video pass sampler (022, 4 steps)"
+    }
+  },
+  "207": {
+    "class_type": "H3AudioFirstCheckLock",
+    "inputs": {
+      "samples": [
+        "125",
+        0
+      ],
+      "audio_latent": [
+        "205",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Check audio lock"
+    }
+  },
+  "92": {
+    "class_type": "H3X2StreamSave",
+    "inputs": {
+      "samples": [
+        "207",
+        0
+      ],
+      "vae": [
+        "920",
+        0
+      ],
+      "audio": [
+        "121",
+        0
+      ],
+      "filename_prefix": "H3_AudioFirst_X2_Stream/14s",
+      "fps": 24.0,
+      "nvenc_gpu": 0,
+      "cq": 18,
+      "fp16_accumulation": true
+    },
+    "_meta": {
+      "title": "X2 stream save"
+    }
+  }
+}

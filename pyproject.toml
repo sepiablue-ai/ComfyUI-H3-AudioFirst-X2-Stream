@@ -1,0 +1,11 @@
+[project]
+name = "comfyui-h3-audiofirst-x2-stream"
+version = "0.1.0"
+description = "MiniMax H3 audio-first two-pass generation: a 32x32 audio pass, then the 022 video pass with the voice locked, and X2 streaming output"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.comfy]
+DisplayName = "H3 AudioFirst X2 Stream"

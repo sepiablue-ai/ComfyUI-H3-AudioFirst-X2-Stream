@@ -1,0 +1,6 @@
+# Example only. Set base_path to your existing shared ComfyUI/model directory.
+h3_shared:
+  base_path: D:/AI/ComfyUI/
+  diffusion_models: models/diffusion_models/
+  text_encoders: models/text_encoders/
+  vae: models/vae/

@@ -1,0 +1,57 @@
+{
+  "last_node_id": 1,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "H3X2PrepareINT8VAE",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        350,
+        160
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "vae",
+          "type": "VAE",
+          "links": [],
+          "slot_index": 0
+        },
+        {
+          "name": "conversion_report",
+          "type": "STRING",
+          "links": [],
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "H3X2PrepareINT8VAE"
+      },
+      "widgets_values": [
+        "MiniMax-H3-X2-Detail-v1.safetensors",
+        "MiniMax-H3-X2-Detail-v1-decoder-int8-convrot.safetensors"
+      ],
+      "title": "H3X2PrepareINT8VAE"
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.4,
+      "offset": [
+        60,
+        80
+      ]
+    }
+  },
+  "version": 0.4
+}

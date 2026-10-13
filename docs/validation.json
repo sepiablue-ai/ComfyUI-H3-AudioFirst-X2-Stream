@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-13",
+  "package_nodes": [
+    "H3AudioFirstConditioning",
+    "H3AudioFirstLockAudio",
+    "H3AudioFirstCheckLock"
+  ],
+  "x2_stream_dependency": {
+    "commit": "eb148a3d0f91a273668bbe027bfcbafb85f2c5e8",
+    "matches_measured_runtime": "nodes.py, ffn.py, streaming.py, quantization.py and __init__.py SHA-256 identical"
+  },
+  "examples": {
+    "input_validation": "ComfyUI execution.validate_prompt passed for 00_prepare_x2 and 5/10/14 s",
+    "gui_api_roundtrip": "every widget and connection reconstructs the API graph"
+  },
+  "package_generation_check": {
+    "example": "examples/api/fl2va_audiofirst_05s.api.json (output prefix changed only)",
+    "prompt_id": "8d4dc4ba-df6e-4ac1-a5c9-cd5fec6141cb",
+    "generation_seconds": 74.818,
+    "audio_lock_max_abs_diff": 2.384185791015625e-07,
+    "decoded_audio_identical_to_measured_runs": true,
+    "video_psnr_db": {
+      "package_vs_measured_1": 25.144,
+      "package_vs_measured_2": 25.105,
+      "measured_1_vs_measured_2": 25.357
+    },
+    "interpretation": "Audio is bit-identical after decoding; video differs from the measured runs by the same amount the two measured runs differ from each other (GPU non-determinism), so the renamed package nodes reproduce the experiment graph."
+  },
+  "unit_tests": "python -B -m unittest discover -s tests -v",
+  "not_checked": [
+    "Fresh ComfyUI install via setup.bat --install-dependencies",
+    "Browser drag-and-drop of GUI workflows"
+  ],
+  "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed",
+  "unit_tests_result": "4 tests passed"
+}
