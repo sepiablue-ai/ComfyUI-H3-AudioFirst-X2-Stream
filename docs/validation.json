@@ -13,8 +13,15 @@
     "input_validation": "ComfyUI execution.validate_prompt passed for 00_prepare_x2 and 5/10/14 s",
     "gui_api_roundtrip": "every widget and connection reconstructs the API graph"
   },
-  "package_generation_check": {
-    "example": "examples/api/fl2va_audiofirst_05s.api.json (output prefix changed only)",
+  "package_generation_check_8_steps": {
+    "examples": "examples/api/fl2va_audiofirst_05s/10s/14s.api.json with output prefix changed only; these are the AudioFirst runs in benchmark.json",
+    "audio_lock_max_abs_diff": 2.384185791015625e-07,
+    "five_second_repeat_decoded_audio_identical": true,
+    "full_decode": true,
+    "singing_run": "sing14_a8 used the experiment node names with identical settings, not the packaged example"
+  },
+  "package_generation_check_6_steps": {
+    "example": "examples/api/fl2va_audiofirst_05s.api.json at 6 steps (output prefix changed only)",
     "prompt_id": "8d4dc4ba-df6e-4ac1-a5c9-cd5fec6141cb",
     "generation_seconds": 74.818,
     "audio_lock_max_abs_diff": 2.384185791015625e-07,
@@ -31,6 +38,5 @@
     "Fresh ComfyUI install via setup.bat --install-dependencies",
     "Browser drag-and-drop of GUI workflows"
   ],
-  "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed",
-  "unit_tests_result": "4 tests passed"
+  "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed"
 }

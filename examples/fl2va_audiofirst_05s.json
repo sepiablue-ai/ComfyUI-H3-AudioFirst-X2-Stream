@@ -689,10 +689,10 @@
       },
       "widgets_values": [
         "simple",
-        6,
+        8,
         1.0
       ],
-      "title": "Audio pass scheduler (6 steps)"
+      "title": "Audio pass scheduler (8 steps)"
     },
     {
       "id": 204,

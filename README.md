@@ -2,7 +2,7 @@
 
 English | [日本語](README_ja.md)
 
-ComfyUI nodes and workflows that reduce the "talking inside a metal pipe" sound of speech generated with fast MiniMax H3 settings. The voice is finished first in a 6-step audio-only pass on a tiny 32 × 32 canvas, then locked while the unchanged 022 video pass generates the picture. Output is 1088 × 1920 through the X2 VAE and asynchronous NVENC saving.
+ComfyUI nodes and workflows that reduce the "talking inside a metal pipe" sound of speech generated with fast MiniMax H3 settings. The voice is finished first in an 8-step audio-only pass on a tiny 32 × 32 canvas, then locked while the unchanged 022 video pass generates the picture. Output is 1088 × 1920 through the X2 VAE and asynchronous NVENC saving.
 
 The video pass is FL2VA `022-matlow-fused4-sla5-x2vae-int8-stream` from [Sayaka Benchmark](https://sayakabenchmark.pages.dev/), used as is. Picture quality matches 022; only the audio is replaced.
 
@@ -23,21 +23,21 @@ Measured on an RTX 4070 12 GB. 022 and AudioFirst use the same image, prompt and
 
 | Video | Frames | 022 | AudioFirst | Difference |
 |---|---:|---:|---:|---:|
-| 5 s | 124 | 60.8 s (1 min 0.8 s) | 71.4 s (1 min 11.4 s) | +10.6 s (+17.5%) |
-| 10 s | 243 | 105.7 s (1 min 45.7 s) | 116.5 s (1 min 56.5 s) | +10.8 s (+10.2%) |
-| 14 s | 345 | 153.8 s (2 min 33.8 s) | 164.2 s (2 min 44.2 s) | +10.4 s (+6.8%) |
-| 14 s singing (640 × 928) | 345 | 172.0 s (2 min 52.0 s) | 185.6 s (3 min 5.6 s) | +13.7 s (+8.0%) |
+| 5 s | 124 | 60.8 s (1 min 0.8 s) | 71.7 s (1 min 11.7 s) | +11.0 s (+18.0%) |
+| 10 s | 243 | 105.7 s (1 min 45.7 s) | 117.1 s (1 min 57.1 s) | +11.4 s (+10.8%) |
+| 14 s | 345 | 153.8 s (2 min 33.8 s) | 165.1 s (2 min 45.1 s) | +11.3 s (+7.4%) |
+| 14 s singing (640 × 928) | 345 | 172.0 s (2 min 52.0 s) | 184.2 s (3 min 4.2 s) | +12.2 s (+7.1%) |
 
-5 s is the mean of two runs per method; the others are single runs. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
+5 s is the mean of two runs per method; the others are single runs. 022 was measured on 2026-10-11/12 and AudioFirst on 2026-10-13, so the values include a few seconds of day-to-day variation. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
 
-The 32 × 32 audio pass has little compute; transferring model weights that do not fit in 12 GB is the likely main cost (not profiled). It measured about 14–16 s regardless of video length, so the added time stays roughly constant and becomes a smaller share for longer videos.
+The 32 × 32 audio pass has little compute; transferring model weights that do not fit in 12 GB is the likely main cost (not profiled). The 8-step audio pass took about 15 s regardless of video length, so the added time stays at roughly 11–12 s and becomes a smaller share for longer videos.
 
 ## Pipeline
 
 | Stage | Description |
 |---|---|
 | Conditioning | TE and the 544 × 960 keyframe exactly as in 022, run once and shared by both passes |
-| Audio pass | 32 × 32, dense attention, 6 steps, same model, sampler, sigma shift and seed |
+| Audio pass | 32 × 32, dense attention, 8 steps, same model, sampler, sigma shift and seed |
 | Audio lock | The finished audio latent is inserted into the video-pass latent with an audio noise mask of 0 |
 | Video pass | Identical to 022: 544 × 960, 4 steps, SLA 5%, FFN 8 chunks |
 | Check | Saving stops unless the audio latent after the video pass still equals the audio pass |
@@ -47,11 +47,11 @@ The 32 × 32 audio pass has little compute; transferring model weights that do n
 
 | Test | Result |
 |---|---|
-| Audio-pass steps 4/5/6/8 | 4 and 5 steps still sounded metallic; 6 and 8 were good. 6 steps selected |
+| Audio-pass steps 4/5/6/8 | 4 and 5 steps still sounded metallic; 6 and 8 were good. 8 steps selected because the cost difference is small |
 | Video pass cut to 2 steps, SLA 1% | Rejected for blur and smearing |
 | Same-MODEL sequential sampling, deferred audio decode, compiler off, FFN memory reuse | No stable speedup; not adopted |
 
-The audio pass costs about 1.2 s per step; 6 steps instead of 8 saves about 2.5 s.
+The audio pass costs about 1.2 s per step. If speed matters more, setting "Audio pass scheduler" to 6 steps saves about 2.5 s; 6 steps also suppressed the metallic sound in testing.
 
 ## Requirements
 
@@ -121,7 +121,7 @@ As in native H3 first-frame handling, the audio-pass keyframe is the input image
 
 [docs/benchmark.json](docs/benchmark.json) records each run's prompt_id, SHA-256 of prompt, workflow and video, stage times and how the step count was chosen.
 
-After renaming the nodes for distribution, the 5 s example was run again. Its decoded audio is identical to the measured runs, and its video differs from them by the same amount the measured runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup, so the difference is not caused by the renaming. See [docs/validation.json](docs/validation.json).
+The 5, 10 and 14 s AudioFirst values come from running the packaged examples with only the output name changed (the singing run used the experiment nodes with the same settings). The two 5 s runs produced identical decoded audio, and every run passed the audio-lock check. A 6-step check made when the nodes were renamed for distribution gave audio identical to the experiment and video differing by the same amount the experiment runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup. See [docs/validation.json](docs/validation.json).
 
 ComfyUI input validation and GUI/API round-trips pass for all examples; tests cover repeated setup, refusal to overwrite differing files and the example settings.
 

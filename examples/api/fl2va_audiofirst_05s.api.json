@@ -222,11 +222,11 @@
         0
       ],
       "scheduler": "simple",
-      "steps": 6,
+      "steps": 8,
       "denoise": 1.0
     },
     "_meta": {
-      "title": "Audio pass scheduler (6 steps)"
+      "title": "Audio pass scheduler (8 steps)"
     }
   },
   "204": {

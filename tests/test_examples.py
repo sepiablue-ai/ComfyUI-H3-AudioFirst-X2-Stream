@@ -16,7 +16,7 @@ class ExampleTests(unittest.TestCase):
             graph = self.load(tag)
             self.assertEqual(graph["131"]["inputs"]["length"], frames)
             self.assertEqual(graph["201"]["inputs"]["length"], frames)
-            self.assertEqual(graph["203"]["inputs"]["steps"], 6)
+            self.assertEqual(graph["203"]["inputs"]["steps"], 8)
             self.assertEqual(graph["124"]["inputs"]["steps"], 4)
             self.assertEqual(graph["900"]["inputs"]["selection.keep_percent"], 5.0)
             self.assertEqual(graph["129"]["inputs"]["noise_seed"], 43)
