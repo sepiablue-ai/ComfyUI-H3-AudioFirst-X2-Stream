@@ -38,5 +38,6 @@
     "Browser drag-and-drop of GUI workflows"
   ],
   "setup_check": "setup.bat --check passed on ComfyUI 0.38.0 master: 3 package nodes, 5 native nodes, 5 models and X2 Stream found; nothing installed",
-  "fresh_install": "docs/fresh_install_validation.json"
+  "fresh_install": "docs/fresh_install_validation.json",
+  "example_prompt_edit": "2026-10-14: in the 10 s and 14 s examples the fourth line was changed from 「あ、今の、聞かなかったことにしてもいいよ？」 to 「あ、今の、聞かなかったことにして！」 for natural wording. Measurements and comparison videos were generated with the earlier line; settings are unchanged."
 }
