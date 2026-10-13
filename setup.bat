@@ -1,7 +1,9 @@
 @echo off
 setlocal
 set "COMFY_ROOT=%~1"
+if defined COMFY_ROOT if "%COMFY_ROOT:~0,2%"=="--" set "COMFY_ROOT="
 set "COMFY_PYTHON=%~2"
+if defined COMFY_PYTHON if "%COMFY_PYTHON:~0,2%"=="--" set "COMFY_PYTHON="
 if not defined COMFY_ROOT if exist "%~dp0..\..\main.py" for %%I in ("%~dp0..\..") do set "COMFY_ROOT=%%~fI"
 if not defined COMFY_ROOT set /p "COMFY_ROOT=ComfyUI folder containing main.py: "
 if not exist "%COMFY_ROOT%\main.py" (
