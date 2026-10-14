@@ -24,8 +24,23 @@ class ExampleTests(unittest.TestCase):
             self.assertEqual(graph["92"]["inputs"]["audio"], ["121", 0])
             self.assertEqual(graph["121"]["inputs"]["samples"], ["205", 0])
 
+    def test_lbh_settings(self):
+        for tag, frames in FRAMES.items():
+            graph = self.load("lbh_" + tag)
+            self.assertEqual(graph["131"]["inputs"]["length"], frames)
+            self.assertEqual(graph["201"]["inputs"]["length"], frames)
+            self.assertEqual(graph["203"]["inputs"]["steps"], 8)
+            self.assertEqual(graph["124"]["inputs"]["steps"], 4)
+            self.assertEqual(graph["160"]["inputs"]["step"], 3)
+            self.assertEqual(graph["127"]["class_type"], "H3LBHF12Loader")
+            self.assertEqual(graph["127"]["inputs"]["cache_directory"], "h3_lbh_x2/f12")
+            self.assertEqual(graph["125"]["inputs"]["latent_image"], ["206", 0])
+            self.assertEqual(graph["168"]["inputs"]["latent_image"], ["208", 0])
+            self.assertEqual(graph["92"]["inputs"]["samples"], ["207", 0])
+            self.assertEqual(graph["121"]["inputs"]["samples"], ["205", 0])
+
     def test_connections_and_gui_copies(self):
-        for tag in FRAMES:
+        for tag in [*FRAMES, *("lbh_" + t for t in FRAMES)]:
             graph = self.load(tag)
             for key, node in graph.items():
                 for value in node["inputs"].values():

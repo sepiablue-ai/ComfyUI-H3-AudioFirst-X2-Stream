@@ -6,6 +6,26 @@ ComfyUI nodes and workflows that reduce the "talking inside a metal pipe" sound 
 
 The video pass is FL2VA `022-matlow-fused4-sla5-x2vae-int8-stream` from [Sayaka Benchmark](https://sayakabenchmark.pages.dev/), used as is. Picture quality matches 022; only the audio is replaced.
 
+A faster variant is included as well: the same audio lock combined with LBH 3+1 from [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (3 steps at 384 × 672, then upscaled for 1 step at 544 × 960).
+
+## Standard or fast
+
+| | Standard | Fast (LBH) |
+|---|---|---|
+| Video pass | Same as 022 (4 steps at 544 × 960) | LBH 3+1 (3 steps at 384 × 672 → 1 step at 544 × 960) |
+| Aspect ratio | Free (width and height multiples of 32) | Low and high resolutions must share one aspect ratio; the image is center-cropped for each |
+| Extra install | None | ComfyUI-H3-LBH-X2-Stream, the LBH 3D upscaler and the F12 cache (prepared automatically on the first run, about 0.93 GB) |
+| Best for | Free aspect ratios, minimal installs | Speed (faster from 5 s up) |
+
+| Video | Standard | Fast (LBH) | Difference |
+|---|---:|---:|---:|
+| 5 s (544 × 960) | 72.8 s (1 min 12.8 s) | 60.0 s (1 min 0.0 s) | -12.8 s |
+| 10 s (544 × 960) | 118.9 s (1 min 58.9 s) | 93.6 s (1 min 33.6 s) | -25.3 s |
+| 14 s (544 × 960) | 165.1 s (2 min 45.1 s) | 125.7 s (2 min 5.7 s) | -39.4 s |
+| 14 s singing (640 × 928) | 187.2 s (3 min 7.2 s) | 137.9 s (2 min 17.9 s) | -49.3 s |
+
+5 s, 10 s and singing were measured on 2026-10-14 (one run each); for 14 s the standard run is from 2026-10-13 and the fast run from 2026-10-14. The fast singing run used 448 × 640 → 640 × 928, and 022 took 172.1 s (2 min 52.1 s) in the same session. At 5 s the fast variant with improved audio takes about as long as plain 022 (about 60.8 s). Compared with LBH 3+1 without the audio pass, it adds about 12 s (5 s: 48.3 → 60.0 s, 14 s: 113.6 → 125.7 s).
+
 ## Sample comparisons
 
 Left is 022 (before), right is AudioFirst (after). The first half plays the left audio; the same picture then plays again from the start with the right audio. The orange frame marks the side being heard.
@@ -75,7 +95,13 @@ If X2 Stream is not installed yet:
 setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --install-dependencies
 ```
 
-A missing X2 Stream is fetched at commit `eb148a3d0f91a273668bbe027bfcbafb85f2c5e8`, the same code used for the measurements. An existing X2 Stream is left unchanged. pip runs with `--no-deps` for that dedicated Python. No models are downloaded.
+Add `--with-lbh` to prepare the fast variant as well:
+
+```bat
+setup.bat "C:\ComfyUI\ComfyUI" --install-dependencies --with-lbh
+```
+
+A missing X2 Stream is fetched at commit `eb148a3d0f91a273668bbe027bfcbafb85f2c5e8`, and LBH X2 Stream at commit `070b78cd7519b56d6684dcaf45ac6bd5f827dbda` only with `--with-lbh`; both are the code used for the measurements. Existing installs are left unchanged. pip runs with `--no-deps` for that dedicated Python. No models are downloaded.
 
 Read-only check:
 
@@ -96,6 +122,9 @@ No weights or generated videos are distributed. Place the following models yours
 | minimax_h3_video_vae_int8_convrot.safetensors | models/vae | [Comfy-Org](https://huggingface.co/Comfy-Org/MiniMax-H3/tree/main/vae) |
 | minimax_h3_audio_vae_fp32.safetensors | models/vae | [Comfy-Org](https://huggingface.co/Comfy-Org/MiniMax-H3/tree/main/vae) |
 | MiniMax-H3-X2-Detail-v1.safetensors | models/vae | [X2 Detail VAE](https://huggingface.co/speach1sdef178/MiniMax-H3-X2-Detail-VAE) |
+| minimax_h3_latent_upscaler_3d_fp16.safetensors (fast variant only) | models/latent_upscale_models | [LBH](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler) |
+
+For the fast variant, the F12 Loader prepares F12 (W4A4 FC1 in 12 blocks) under `models/h3_lbh_x2/f12` on the first run. See [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) for details.
 
 ## Use in ComfyUI
 
@@ -104,6 +133,8 @@ No weights or generated videos are distributed. Place the following models yours
 3. Choose an image in LoadImage and edit the MiniMaxH3ImageToVideo prompt. Setup copies the default sample image to input.
 4. To change the length, set the same `length` on MiniMaxH3ImageToVideo and "Audio pass conditioning (32x32)". H3 frame counts follow 17k+5 (124, 243, 345, ...).
 5. Keep both sampling width and height multiples of 32. If the image has a different aspect ratio, match it with ImageScale and ImageCrop first.
+
+The fast variant is in the [5 s](examples/fl2va_audiofirst_lbh_05s.json), [10 s](examples/fl2va_audiofirst_lbh_10s.json) and [14 s](examples/fl2va_audiofirst_lbh_14s.json) workflows. To change the length, set the same `length` on Shared image conditioning and "Audio pass conditioning (32x32)". To change the resolution, give Shared image conditioning low and high sizes with the same aspect ratio in multiples of 32, and set LBH video upscale + continue to the high size. The first run spends extra time preparing F12.
 
 All examples use seed 43, res_multistep/simple, video/audio sigma shift 12/3, 24 fps and CQ18. Output goes to ComfyUI's output/H3_AudioFirst_X2_Stream.
 

@@ -16,6 +16,9 @@ import zipfile
 ROOT = Path(__file__).resolve().parent
 DEPENDENCY_NAME = "ComfyUI-H3-X2-Stream"
 DEPENDENCY_COMMIT = "eb148a3d0f91a273668bbe027bfcbafb85f2c5e8"
+LBH_NAME = "ComfyUI-H3-LBH-X2-Stream"
+LBH_COMMIT = "070b78cd7519b56d6684dcaf45ac6bd5f827dbda"
+LBH_UPSCALERS = ("minimax_h3_latent_upscaler_3d_fp16.safetensors", "minimax_h3_latent_upscaler_3d_conv_v1_fp16.safetensors")
 MODELS = {
     "diffusion_models": "minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors",
     "text_encoders": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
@@ -58,15 +61,15 @@ def install_package(comfy_root):
     return destination
 
 
-def install_dependency(comfy_root):
-    destination = comfy_root / "custom_nodes" / DEPENDENCY_NAME
+def install_dependency(comfy_root, name=DEPENDENCY_NAME, commit=DEPENDENCY_COMMIT):
+    destination = comfy_root / "custom_nodes" / name
     if destination.exists():
         return destination
-    url = f"https://codeload.github.com/sepiablue-ai/{DEPENDENCY_NAME}/zip/{DEPENDENCY_COMMIT}"
+    url = f"https://codeload.github.com/sepiablue-ai/{name}/zip/{commit}"
     request = urllib.request.Request(url, headers={"User-Agent": "H3-AudioFirst-X2-Setup"})
     with urllib.request.urlopen(request, timeout=60) as response:
         archive = zipfile.ZipFile(io.BytesIO(response.read()))
-    prefix = f"{DEPENDENCY_NAME}-{DEPENDENCY_COMMIT}/"
+    prefix = f"{name}-{commit}/"
     members = []
     for member in archive.infolist():
         if not member.filename.startswith(prefix):
@@ -88,8 +91,8 @@ def install_dependency(comfy_root):
     return destination
 
 
-def import_package(name):
-    spec = importlib.util.spec_from_file_location(name, ROOT / "__init__.py", submodule_search_locations=[str(ROOT)])
+def import_package(name, root=ROOT):
+    spec = importlib.util.spec_from_file_location(name, root / "__init__.py", submodule_search_locations=[str(root)])
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
     spec.loader.exec_module(module)
@@ -104,6 +107,7 @@ def main():
     parser.add_argument("--check", action="store_true", help="Read-only environment and model check")
     parser.add_argument("--install-dependencies", action="store_true", help="Install missing X2 Stream and requirements into this dedicated Python")
     parser.add_argument("--extra-model-paths", type=Path, help="Additional native ComfyUI model-path YAML")
+    parser.add_argument("--with-lbh", action="store_true", help="Also prepare the faster LBH 3+1 workflows (ComfyUI-H3-LBH-X2-Stream and its upscaler)")
     args = parser.parse_args()
     if args.check and args.install_dependencies:
         parser.error("--check cannot be combined with installation")
@@ -120,7 +124,13 @@ def main():
         dependency = install_dependency(comfy_root)
         for requirements in (ROOT / "requirements.txt", dependency / "requirements.txt"):
             subprocess.run([sys.executable, "-m", "pip", "install", "--no-deps", "-r", str(requirements)], check=True)
+        if args.with_lbh:
+            lbh = install_dependency(comfy_root, LBH_NAME, LBH_COMMIT)
+            subprocess.run([sys.executable, "-m", "pip", "install", "--no-deps", "-r", str(lbh / "requirements.txt")], check=True)
     dependency = comfy_root / "custom_nodes" / DEPENDENCY_NAME
+    lbh_root = comfy_root / "custom_nodes" / LBH_NAME
+    if args.with_lbh and not (lbh_root / "handoff.py").is_file():
+        raise RuntimeError("LBH X2 Stream is missing; install it or use --install-dependencies --with-lbh")
     if not (dependency / "nodes.py").is_file():
         raise RuntimeError("X2 Stream is missing; install it or use --install-dependencies")
     os.environ["PYTHONIOENCODING"] = "utf-8"
@@ -153,6 +163,18 @@ def main():
         if len(matches) > 1:
             raise RuntimeError(f"Multiple model matches in {folder}; select the intended file in ComfyUI: {filename}")
         found[category] = folder_paths.get_full_path_or_raise(folder, matches[0])
+    lbh_report = None
+    if args.with_lbh:
+        lbh_module = import_package("h3_lbh_for_audiofirst", lbh_root)
+        lbh_nodes = sorted(lbh_module.NODE_CLASS_MAPPINGS)
+        candidates = folder_paths.get_filename_list("latent_upscale_models")
+        upscaler = next((name for name in candidates if Path(name).name in LBH_UPSCALERS), None)
+        if upscaler is None:
+            raise FileNotFoundError("LBH upscaler missing from models/latent_upscale_models; see README_ja.md")
+        f12 = Path(folder_paths.models_dir) / "h3_lbh_x2" / "f12"
+        lbh_report = {"package": str(lbh_root), "nodes": lbh_nodes,
+                      "upscaler": folder_paths.get_full_path_or_raise("latent_upscale_models", upscaler),
+                      "f12_cache": "present" if (f12 / "manifest.json").is_file() else "prepared by the F12 Loader on the first LBH run (about 0.93 GB)"}
     installed = str(comfy_root / "custom_nodes" / ROOT.name) if args.check else str(install_package(comfy_root))
     if not args.check:
         for source in (ROOT / "examples/assets").glob("*"):
@@ -165,7 +187,7 @@ def main():
                 shutil.copy2(source, target)
     print(json.dumps({"status": "check_passed" if args.check else "installed", "python": sys.executable,
         "comfy_root": str(comfy_root), "package": installed, "registered_nodes": registered,
-        "x2_stream": str(dependency), "models": found, "video_generations": 0,
+        "x2_stream": str(dependency), "lbh": lbh_report, "models": found, "video_generations": 0,
         "model_downloads": 0, "core_files_changed": False}, ensure_ascii=True, indent=2))
 
 

@@ -9,3 +9,5 @@ Package code is GPL-3.0; see LICENSE. No model weights, converted weights or gen
 - The MATLOW fused model and Comfy-Org H3 weights identify their license as MiniMax H3 Community License on their model pages. The X2 VAE retains the terms on its distribution page. This code license does not replace model or derived-weight terms. [X2 source](https://huggingface.co/speach1sdef178/MiniMax-H3-X2-Detail-VAE).
 
 Measurements are in docs/benchmark.json and the package check is in docs/validation.json. No private experiment folder is required at runtime.
+
+The optional fast workflows use [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (GPL-3.0, by sepiablue-ai) at commit 070b78cd7519b56d6684dcaf45ac6bd5f827dbda, installed only with `--with-lbh`. Its LBH upscaler weights and vendored MIT code keep the terms listed in that repository's NOTICE.

@@ -502,5 +502,225 @@
     "Single runs for 10 s, 14 s and singing include day-to-day variation",
     "Audio-pass keyframe is the first frame resized to 32x32 without crop, as in native H3 first-frame handling",
     "Video sampling is not bit-reproducible across runs on this setup; audio is"
-  ]
+  ],
+  "fast_lbh": {
+    "description": "Audio-first pass (F12 model, 32x32, 8 steps) locked into LBH 3+1 from ComfyUI-H3-LBH-X2-Stream 070b78c; audio locked before the low-res steps and again before the high-res step",
+    "sessions": [
+      {
+        "date": "2026-10-14",
+        "note": "14 s dialogue, alternating plain LBH and fast AudioFirst, one cold start excluded",
+        "runs": [
+          {
+            "run_id": "lbh14_ctrl_s2",
+            "method": "lbh_plain",
+            "prompt_id": "a1e696b1-e174-4995-9766-b18d16ae1ef8",
+            "generation_seconds": 113.581,
+            "stages_seconds": {
+              "conditioning": 8.701,
+              "low_sampler": 39.429,
+              "lbh_handoff": 2.937,
+              "high_sampler": 29.517,
+              "x2_decode_save": 30.962
+            },
+            "frames": 345,
+            "prompt_sha256": "6410408aefa211fcaa4550ea6b1bae188bfc48e18e988fbba412eabe9503a61e"
+          },
+          {
+            "run_id": "lbh_af8_14s_1",
+            "method": "audiofirst_lbh",
+            "prompt_id": "20e67a20-872e-4437-b575-514e273585fb",
+            "generation_seconds": 125.699,
+            "stages_seconds": {
+              "conditioning": 8.75,
+              "audio_sampler": 14.965,
+              "low_sampler": 36.277,
+              "lbh_handoff": 2.979,
+              "high_sampler": 29.364,
+              "x2_decode_save": 30.924
+            },
+            "frames": 345,
+            "prompt_sha256": "6410408aefa211fcaa4550ea6b1bae188bfc48e18e988fbba412eabe9503a61e"
+          },
+          {
+            "run_id": "lbh_af8_14s_2",
+            "method": "audiofirst_lbh",
+            "prompt_id": "d1974902-3221-472e-b83f-691dcad62888",
+            "generation_seconds": 125.685,
+            "stages_seconds": {
+              "conditioning": 8.635,
+              "audio_sampler": 14.846,
+              "low_sampler": 36.582,
+              "lbh_handoff": 2.954,
+              "high_sampler": 29.518,
+              "x2_decode_save": 30.997
+            },
+            "frames": 345,
+            "prompt_sha256": "6410408aefa211fcaa4550ea6b1bae188bfc48e18e988fbba412eabe9503a61e"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-14",
+        "note": "standard vs fast AudioFirst, one run each after standard and LBH warmups; 10 s uses the revised fourth line",
+        "runs": [
+          {
+            "run_id": "m_std_05s",
+            "method": "audiofirst_standard",
+            "prompt_id": "b463190d-4580-4c2d-b66f-e8fe0f1d232d",
+            "generation_seconds": 72.828,
+            "stages_seconds": {
+              "conditioning": 8.414,
+              "audio_sampler": 16.011,
+              "video_sampler": 34.778,
+              "x2_decode_save": 11.784
+            },
+            "frames": 124,
+            "prompt_sha256": "5172d3f6c34e348617488b80806ed122f841ef8854d7f3decec231fa2435c399"
+          },
+          {
+            "run_id": "m_lbh_05s",
+            "method": "audiofirst_lbh",
+            "prompt_id": "287a4f41-a81f-4fc0-9ac6-6674abcb31e3",
+            "generation_seconds": 60.01,
+            "stages_seconds": {
+              "conditioning": 8.318,
+              "audio_sampler": 14.544,
+              "low_sampler": 12.721,
+              "lbh_handoff": 1.357,
+              "high_sampler": 9.41,
+              "x2_decode_save": 11.757
+            },
+            "frames": 124,
+            "prompt_sha256": "5172d3f6c34e348617488b80806ed122f841ef8854d7f3decec231fa2435c399"
+          },
+          {
+            "run_id": "m_std_10s",
+            "method": "audiofirst_standard",
+            "prompt_id": "756f61f9-2a2a-4fd6-b25a-3d17e6c5de31",
+            "generation_seconds": 118.852,
+            "stages_seconds": {
+              "conditioning": 8.37,
+              "audio_sampler": 15.983,
+              "video_sampler": 70.316,
+              "x2_decode_save": 22.199
+            },
+            "frames": 243,
+            "prompt_sha256": "465e33e48b3350b158aa869ccfd5c21a7984b1ceb4d94bc3397989f81c043f3e"
+          },
+          {
+            "run_id": "m_lbh_10s",
+            "method": "audiofirst_lbh",
+            "prompt_id": "dba3c610-3e49-46c7-b54d-f09dc385c5b1",
+            "generation_seconds": 93.547,
+            "stages_seconds": {
+              "conditioning": 8.594,
+              "audio_sampler": 14.494,
+              "low_sampler": 24.548,
+              "lbh_handoff": 2.158,
+              "high_sampler": 19.569,
+              "x2_decode_save": 22.14
+            },
+            "frames": 243,
+            "prompt_sha256": "465e33e48b3350b158aa869ccfd5c21a7984b1ceb4d94bc3397989f81c043f3e"
+          },
+          {
+            "run_id": "m_g022",
+            "method": "022_640x928",
+            "prompt_id": "0b675817-6118-45d8-b073-257ca834d287",
+            "generation_seconds": 172.146,
+            "stages_seconds": {
+              "conditioning": 8.407,
+              "video_sampler": 130.436,
+              "x2_decode_save": 31.289
+            },
+            "frames": 345,
+            "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881"
+          },
+          {
+            "run_id": "m_gstd",
+            "method": "audiofirst_standard_640x928",
+            "prompt_id": "00df09ec-f7db-4525-9724-65c0791ea874",
+            "generation_seconds": 187.205,
+            "stages_seconds": {
+              "conditioning": 8.575,
+              "video_sampler": 127.784,
+              "x2_decode_save": 31.097
+            },
+            "frames": 345,
+            "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881"
+          },
+          {
+            "run_id": "m_glbh",
+            "method": "audiofirst_lbh_448x640_to_640x928",
+            "prompt_id": "084954c5-31ff-4d12-8506-74a062f9f8d5",
+            "generation_seconds": 137.87,
+            "stages_seconds": {
+              "conditioning": 8.773,
+              "audio_sampler": 16.231,
+              "low_sampler": 41.072,
+              "lbh_handoff": 3.262,
+              "high_sampler": 35.164,
+              "x2_decode_save": 31.09
+            },
+            "frames": 345,
+            "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-14",
+        "note": "plain LBH 3+1 without the audio pass, after one warmup",
+        "runs": [
+          {
+            "run_id": "p_lbh_05s",
+            "method": "lbh_plain",
+            "prompt_id": "47276751-a843-4431-9098-218e0f290e01",
+            "generation_seconds": 48.288,
+            "stages_seconds": {
+              "conditioning": 8.353,
+              "low_sampler": 15.656,
+              "lbh_handoff": 1.368,
+              "high_sampler": 9.382,
+              "x2_decode_save": 11.756
+            },
+            "frames": 124,
+            "prompt_sha256": "5172d3f6c34e348617488b80806ed122f841ef8854d7f3decec231fa2435c399"
+          },
+          {
+            "run_id": "p_lbh_10s",
+            "method": "lbh_plain",
+            "prompt_id": "ba059624-4503-404f-986a-06461e6e0927",
+            "generation_seconds": 81.685,
+            "stages_seconds": {
+              "conditioning": 8.61,
+              "low_sampler": 27.269,
+              "lbh_handoff": 2.224,
+              "high_sampler": 19.597,
+              "x2_decode_save": 22.035
+            },
+            "frames": 243,
+            "prompt_sha256": "465e33e48b3350b158aa869ccfd5c21a7984b1ceb4d94bc3397989f81c043f3e"
+          },
+          {
+            "run_id": "p_glbh",
+            "method": "lbh_plain_448x640_to_640x928",
+            "prompt_id": "24dbbfba-524f-4238-b53a-7ff5d0cf7d4e",
+            "generation_seconds": 123.911,
+            "stages_seconds": {
+              "conditioning": 8.705,
+              "low_sampler": 43.745,
+              "lbh_handoff": 3.29,
+              "high_sampler": 35.04,
+              "x2_decode_save": 30.906
+            },
+            "frames": 345,
+            "prompt_sha256": "b615c814f2a3900d7a5ce196f20b720251d1b21212d56e1f2b7b3f5212530881"
+          }
+        ]
+      }
+    ],
+    "f12_audio_listening": "User judged the F12 8-step audio pass equal to the standard INT8 8-step pass (14 s dialogue)",
+    "human_review": "Fast AudioFirst picture and lip sync acceptable; audio better than plain LBH 3+1 (user, 2026-10-14)",
+    "lbh_code": "Measured LBH node files are byte-identical to ComfyUI-H3-LBH-X2-Stream 070b78c"
+  }
 }

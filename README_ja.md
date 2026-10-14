@@ -6,6 +6,26 @@ MiniMax H3の高速設定で生成したセリフが、金属管の中で話し�
 
 映像パスは[さやかベンチマーク](https://sayakabenchmark.pages.dev/)のFL2VA `022-matlow-fused4-sla5-x2vae-int8-stream`をそのまま使います。画質は022と同等で、音声だけを置き換えます。
 
+さらに速い高速版として、[ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream)のLBH 3+1（384×672で3step、拡大して544×960で1step）に同じ音声固定を組み合わせたワークフローも同梱しています。
+
+## 標準版と高速版の使い分け
+
+| | 標準版 | 高速版（LBH） |
+|---|---|---|
+| 映像パス | 022と同一（544×960で4step） | LBH 3+1（384×672で3step→544×960で1step） |
+| 縦横比 | 自由（width・heightが32の倍数） | 低・高解像度を同じ比率にする。画像は解像度ごとに中央クロップ |
+| 追加の導入 | なし | ComfyUI-H3-LBH-X2-Stream、LBH 3D upscaler、F12キャッシュ（初回自動準備、約0.93GB） |
+| 向いている用途 | 縦横比を自由に決めたい、導入を増やしたくない | 速さを優先したい（5秒から効果あり） |
+
+| 動画 | 標準版 | 高速版（LBH） | 差 |
+|---|---:|---:|---:|
+| 5秒（544×960） | 72.8秒（1分12.8秒） | 60.0秒（1分0.0秒） | -12.8秒 |
+| 10秒（544×960） | 118.9秒（1分58.9秒） | 93.6秒（1分33.6秒） | -25.3秒 |
+| 14秒（544×960） | 165.1秒（2分45.1秒） | 125.7秒（2分5.7秒） | -39.4秒 |
+| 14秒・歌（640×928） | 187.2秒（3分7.2秒） | 137.9秒（2分17.9秒） | -49.3秒 |
+
+5・10秒と歌は2026年10月14日の同日計測（各1回）、14秒は標準版が10月13日、高速版が10月14日です。歌の高速版は448×640→640×928で生成し、同じセッションの022は172.1秒（2分52.1秒）でした。高速版の5秒は、音声を改善しても従来の022（約60.8秒）とほぼ同じ時間です。音声改善を入れないLBH 3+1と比べた追加時間は約12秒（5秒48.3→60.0秒、14秒113.6→125.7秒）でした。
+
 ## サンプル比較
 
 どちらも左が022（改善前）、右がAudioFirst（改善後）です。前半は左の音声、後半は同じ映像を最初から流して右の音声を再生します。再生中の側をオレンジ枠で示しています。
@@ -69,13 +89,19 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe"
 
 専用Pythonを省略すると、そのComfyUIのPortable Python、`.venv`、`venv`を探します。候補が1つでなければ明示指定が必要です。グローバルPythonは拒否します。setupはコードとサンプル画像を配置し、ネイティブノードとモデルを確認します。既存の異なるノードやサンプル画像を上書きしません。ComfyUIを起動しません。
 
-X2 Streamが未導入なら、専用Pythonを指定して次を実行します。
+X2 Streamが未導入なら、次を実行します。
 
 ```bat
 setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --install-dependencies
 ```
 
-未導入のX2 Streamはcommit `eb148a3d0f91a273668bbe027bfcbafb85f2c5e8`から取得します。これは実測に使ったX2 Streamと同じコードです。既存のX2 Streamは更新しません。pipはその専用Pythonに対して`--no-deps`で実行します。モデルはダウンロードしません。
+高速版も使う場合は`--with-lbh`を加えます。
+
+```bat
+setup.bat "C:\ComfyUI\ComfyUI" --install-dependencies --with-lbh
+```
+
+未導入のX2 Streamはcommit `eb148a3d0f91a273668bbe027bfcbafb85f2c5e8`、LBH X2 Streamは`--with-lbh`のときだけcommit `070b78cd7519b56d6684dcaf45ac6bd5f827dbda`から取得します。どちらも実測に使ったコードと同じです。既存のものは更新しません。pipはその専用Pythonに対して`--no-deps`で実行します。モデルはダウンロードしません。
 
 検査のみ行う場合:
 
@@ -96,6 +122,9 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 | minimax_h3_video_vae_int8_convrot.safetensors | models/vae | [Comfy-Org](https://huggingface.co/Comfy-Org/MiniMax-H3/tree/main/vae) |
 | minimax_h3_audio_vae_fp32.safetensors | models/vae | [Comfy-Org](https://huggingface.co/Comfy-Org/MiniMax-H3/tree/main/vae) |
 | MiniMax-H3-X2-Detail-v1.safetensors | models/vae | [X2 Detail VAE](https://huggingface.co/speach1sdef178/MiniMax-H3-X2-Detail-VAE) |
+| minimax_h3_latent_upscaler_3d_fp16.safetensors（高速版のみ） | models/latent_upscale_models | [LBH](https://huggingface.co/LBH-123-AI/Minimax_h3_latent_Upscaler) |
+
+高速版のF12（FC1の12層をW4A4）は、初回実行時にF12 Loaderが`models/h3_lbh_x2/f12`へ準備します。詳細は[ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream)を参照してください。
 
 ## ComfyUIで使う
 
@@ -104,6 +133,8 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 3. LoadImageで画像を選び、MiniMaxH3ImageToVideoのプロンプトを変更します。初期サンプル画像はsetupがinputへコピーします。
 4. 動画の長さを変える場合は、MiniMaxH3ImageToVideoと「Audio pass conditioning (32x32)」の`length`を同じ値にします。H3のフレーム数は17k+5（124、243、345など）です。
 5. 生成解像度はwidth・heightとも32の倍数にしてください。画像の縦横比と異なる場合は、ImageScaleとImageCropで合わせてから入力します。
+
+高速版は[5秒](examples/fl2va_audiofirst_lbh_05s.json)、[10秒](examples/fl2va_audiofirst_lbh_10s.json)、[14秒](examples/fl2va_audiofirst_lbh_14s.json)です。長さを変える場合はShared image conditioningと「Audio pass conditioning (32x32)」の`length`を同じ値にします。解像度を変える場合は、Shared image conditioningの低・高解像度を同じ縦横比の32の倍数にし、LBH video upscale + continueのwidth・heightを高解像度と同じ値にします。初回はF12の準備に時間がかかります。
 
 全例はseed43、res_multistep/simple、video/audio sigma shift 12/3、24fps、CQ18です。保存先はComfyUIのoutput/H3_AudioFirst_X2_Streamです。
 
