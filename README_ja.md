@@ -160,7 +160,7 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 "C:\ComfyUI\.venv\Scripts\python.exe" -B -m unittest discover -s tests -v
 ```
 
-新規cloneしたComfyUI 0.39.0+49に、別フォルダのこのrepoから`setup.bat "COMFY_ROOT" --install-dependencies`で導入し、X2準備と5・10・14秒exampleを無変更で実行しました。すべて成功し、音声は0.38.0での実測runとデコード後に完全一致しました。PyTorch等は既存venvを参照し、0.39.0の追加要件だけを専用venvへ導入した試験で、完全に空のPython環境からの導入ではありません。ブラウザーでのドラッグ操作は未検査です。[導入検証記録](docs/fresh_install_validation.json)。
+新規cloneしたComfyUI 0.39.0+49に、別フォルダのこのrepoから`setup.bat "COMFY_ROOT" --install-dependencies`で導入し、X2準備と5・10・14秒exampleを無変更で実行しました。すべて成功し、音声は0.38.0での実測runとデコード後に完全一致しました。PyTorch等は既存venvを参照し、0.39.0の追加要件だけを専用venvへ導入した試験で、完全に空のPython環境からの導入ではありません。さらに新規cloneしたComfyUI 0.40.0に`--install-dependencies --with-lbh`で導入し、X2準備、標準版5秒、高速版5・10・14秒を無変更で実行して全て成功しました（初回の高速版はF12準備を含み107秒、高速版10秒93.5秒・14秒125.4秒）。音声は実測runとデコード後に一致しました。ブラウザーでのドラッグ操作は未検査です。[導入検証記録](docs/fresh_install_validation.json)。
 
 ## ライセンス
 
