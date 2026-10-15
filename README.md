@@ -30,6 +30,14 @@ Left is before (X2 Stream 4-step), right is AudioFirst (standard). The first hal
 | 14 s, five Japanese dialogue lines | ▶ [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
 | 14 s, singing in English while playing guitar | ▶ [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
 
+**14 s, five Japanese dialogue lines**
+
+https://github.com/user-attachments/assets/cf5235c9-6f93-48f9-b12a-ee7db16d43b5
+
+**14 s, singing in English while playing guitar**
+
+https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
+
 The singing sample resizes a 1248 × 1824 image to 657 × 960 without changing its aspect ratio and center-crops it to 544 × 960, the same resolution as the bundled examples.
 
 ## How it works
