@@ -2,17 +2,47 @@
 
 English | [日本語](README_ja.md)
 
-ComfyUI nodes and workflows that reduce the "talking inside a metal pipe" sound of speech generated with fast MiniMax H3 settings. The voice is finished first in an 8-step audio-only pass on a tiny 32 × 32 canvas, then locked while the unchanged 022 video pass generates the picture. Output is 1088 × 1920 through the X2 VAE and asynchronous NVENC saving.
+**ComfyUI nodes that reduce the "talking inside a metal pipe" voice of fast MiniMax H3 settings. The fast (LBH) variant improves the audio and is still faster than before.**
 
-The video pass is FL2VA `022-matlow-fused4-sla5-x2vae-int8-stream` from [Sayaka Benchmark](https://sayakabenchmark.pages.dev/), used as is. Picture quality matches 022; only the audio is replaced.
+Measured on an RTX 4070 12 GB, 1088 × 1920 video with audio:
 
-A faster variant is included as well: the same audio lock combined with LBH 3+1 from [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (3 steps at 384 × 672, then upscaled for 1 step at 544 × 960).
+| 14 s dialogue video | Generation time | Audio |
+|---|---:|---|
+| Before (X2 Stream 4-step) | 153.8 s (2 min 33.8 s) | Often metallic |
+| AudioFirst standard | 165.1 s (2 min 45.1 s) | Improved |
+| **AudioFirst fast (LBH)** | **125.7 s (2 min 5.7 s)** | **Improved** |
+
+- **About 18% faster, with better audio**: 14 s dialogue, 153.8 s → 125.7 s (-28.1 s).
+- **About 20% faster in a same-session comparison**: 14 s singing with guitar (640 × 928), 172.1 s before → 137.9 s fast.
+- **No slower at 5 s**: the fast variant takes 60.0 s, about the same as before (about 60.8 s), with better audio.
+- **Standard keeps the picture unchanged**: the video pass is identical to before; only the audio is replaced (about 11 s added).
+
+"Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means); the three rows above were measured on different days and include a few seconds of day-to-day variation. See [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
+
+> Author: Kamimoto (かみもと) | Quick results on **[X (@sep_is_heim)](https://x.com/sep_is_heim)**, write-ups (Japanese) on **[note](https://note.com/sepiablue)** ([article index](https://note.com/sepiablue/n/n8e612c619a3e)).
+
+## Sample comparisons
+
+Left is before (X2 Stream 4-step), right is AudioFirst (standard). The first half plays the left audio; the same picture then plays again from the start with the right audio. The orange frame marks the side being heard.
+
+| Content | Video |
+|---|---|
+| 14 s, five Japanese dialogue lines | ▶ [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
+| 14 s, singing in English while playing guitar | ▶ [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
+
+The singing sample resizes a 1248 × 1824 image to 657 × 960 without changing its aspect ratio and center-crops it to 544 × 960, the same resolution as the bundled examples.
+
+## How it works
+
+The voice is finished first in an 8-step audio-only pass on a tiny 32 × 32 canvas, then locked while the unchanged video pass generates the picture. Output is 1088 × 1920 through the X2 VAE and asynchronous NVENC saving. The video pass is the FL2VA configuration from [Sayaka Benchmark](https://sayakabenchmark.pages.dev/), used as is, so picture quality matches the previous workflow.
+
+The fast variant combines the same audio lock with LBH 3+1 from [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (3 steps at 384 × 672, then upscaled for 1 step at 544 × 960).
 
 ## Standard or fast
 
 | | Standard | Fast (LBH) |
 |---|---|---|
-| Video pass | Same as 022 (4 steps at 544 × 960) | LBH 3+1 (3 steps at 384 × 672 → 1 step at 544 × 960) |
+| Video pass | Same as before (4 steps at 544 × 960) | LBH 3+1 (3 steps at 384 × 672 → 1 step at 544 × 960) |
 | Aspect ratio | Free (width and height multiples of 32) | Low and high resolutions must share one aspect ratio; the image is center-cropped for each |
 | Extra install | None | ComfyUI-H3-LBH-X2-Stream, the LBH 3D upscaler and the F12 cache (prepared automatically on the first run, about 0.93 GB) |
 | Best for | Free aspect ratios, minimal installs | Speed (faster from 5 s up) |
@@ -24,31 +54,20 @@ A faster variant is included as well: the same audio lock combined with LBH 3+1 
 | 14 s (544 × 960) | 165.1 s (2 min 45.1 s) | 125.7 s (2 min 5.7 s) | -39.4 s |
 | 14 s singing (640 × 928) | 187.2 s (3 min 7.2 s) | 137.9 s (2 min 17.9 s) | -49.3 s |
 
-5 s, 10 s and singing were measured on 2026-10-14 (one run each); for 14 s the standard run is from 2026-10-13 and the fast run from 2026-10-14. The fast singing run used 448 × 640 → 640 × 928, and 022 took 172.1 s (2 min 52.1 s) in the same session. At 5 s the fast variant with improved audio takes about as long as plain 022 (about 60.8 s). Compared with LBH 3+1 without the audio pass, it adds about 12 s (5 s: 48.3 → 60.0 s, 14 s: 113.6 → 125.7 s).
-
-## Sample comparisons
-
-Left is 022 (before), right is AudioFirst (after). The first half plays the left audio; the same picture then plays again from the start with the right audio. The orange frame marks the side being heard.
-
-| Content | Video |
-|---|---|
-| 14 s, five Japanese dialogue lines | [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
-| 14 s, singing in English while playing guitar | [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
-
-The singing sample resizes a 1248 × 1824 image to 657 × 960 without changing its aspect ratio and center-crops it to 544 × 960, the same resolution as the bundled examples.
+5 s, 10 s and singing were measured on 2026-10-14 (one run each); for 14 s the standard run is from 2026-10-13 and the fast run from 2026-10-14. The fast singing run used 448 × 640 → 640 × 928, and the previous workflow took 172.1 s (2 min 52.1 s) in the same session. Compared with LBH 3+1 without the audio pass, it adds about 12 s (5 s: 48.3 → 60.0 s, 14 s: 113.6 → 125.7 s).
 
 ## Generation time
 
-Measured on an RTX 4070 12 GB. 022 and AudioFirst use the same image, prompt and seed 43.
+Standard versus before, measured on an RTX 4070 12 GB with the same image, prompt and seed 43.
 
-| Video | Frames | 022 | AudioFirst | Difference |
+| Video | Frames | Before (X2 Stream 4-step) | AudioFirst standard | Difference |
 |---|---:|---:|---:|---:|
 | 5 s | 124 | 60.8 s (1 min 0.8 s) | 71.7 s (1 min 11.7 s) | +11.0 s (+18.0%) |
 | 10 s | 243 | 105.7 s (1 min 45.7 s) | 117.1 s (1 min 57.1 s) | +11.4 s (+10.8%) |
 | 14 s | 345 | 153.8 s (2 min 33.8 s) | 165.1 s (2 min 45.1 s) | +11.3 s (+7.4%) |
 | 14 s singing | 345 | 153.2 s (2 min 33.2 s) | 169.6 s (2 min 49.6 s) | +16.4 s (+10.7%) |
 
-5 s is the mean of two runs per method; the others are single runs. For dialogue, 022 was measured on 2026-10-11 and AudioFirst on 2026-10-13, so the values include a few seconds of day-to-day variation. Both singing runs were measured in one session on 2026-10-13; its audio pass was slower than in other sessions (about 1.4 s per step instead of 1.2 s), so that difference is larger. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
+5 s is the mean of two runs per method; the others are single runs. For dialogue, the previous workflow was measured on 2026-10-11 and AudioFirst on 2026-10-13, so the values include a few seconds of day-to-day variation. Both singing runs were measured in one session on 2026-10-13; its audio pass was slower than in other sessions (about 1.4 s per step instead of 1.2 s), so that difference is larger. Times are ComfyUI history `execution_start` to `execution_success`, excluding server startup, uploads and inspection.
 
 The 32 × 32 audio pass has little compute; transferring model weights that do not fit in 12 GB is the likely main cost (not profiled). The 8-step audio pass took about 15 s regardless of video length, so the added time stays at roughly 11–12 s and becomes a smaller share for longer videos.
 
@@ -56,10 +75,10 @@ The 32 × 32 audio pass has little compute; transferring model weights that do n
 
 | Stage | Description |
 |---|---|
-| Conditioning | TE and the 544 × 960 keyframe exactly as in 022, run once and shared by both passes |
+| Conditioning | TE and the 544 × 960 keyframe exactly as before, run once and shared by both passes |
 | Audio pass | 32 × 32, dense attention, 8 steps, same model, sampler, sigma shift and seed |
 | Audio lock | The finished audio latent is inserted into the video-pass latent with an audio noise mask of 0 |
-| Video pass | Identical to 022: 544 × 960, 4 steps, SLA 5%, FFN 8 chunks |
+| Video pass | Identical to before: 544 × 960, 4 steps, SLA 5%, FFN 8 chunks |
 | Check | Saving stops unless the audio latent after the video pass still equals the audio pass |
 | Save | Audio VAE decodes the audio-pass latent; INT8 X2 VAE, H.264 NVENC and AAC output |
 
@@ -161,6 +180,20 @@ ComfyUI input validation and GUI/API round-trips pass for all examples; tests co
 ```
 
 A fresh clone of ComfyUI 0.39.0+49 was set up from a separate checkout of this repo with `setup.bat "COMFY_ROOT" --install-dependencies`; X2 preparation and the 5, 10 and 14 s examples then ran unchanged and all succeeded, with decoded audio identical to the measured runs on 0.38.0. PyTorch and other existing packages were referenced from an existing venv and only the 0.39.0 additions were installed into the dedicated venv, so this is not an install from a completely empty Python environment. A fresh clone of ComfyUI 0.40.0 was then set up with `--install-dependencies --with-lbh`, and X2 preparation, the standard 5 s example and the fast 5, 10 and 14 s examples all ran unchanged and succeeded (the first fast run took 107 s including F12 preparation; fast 10 s 93.5 s, 14 s 125.4 s), with decoded audio matching the measured runs. Browser drag-and-drop was not tested. See [docs/fresh_install_validation.json](docs/fresh_install_validation.json).
+
+## Author and related repositories
+
+I'm Kamimoto (かみもと). I measure and publish MiniMax H3 and ComfyUI speed-ups and VRAM reductions on an RTX 4070 12 GB.
+
+- X: [@sep_is_heim](https://x.com/sep_is_heim) — quick results with step counts, seconds and speed-ups
+- note: [かみもと｜ローカルAI生成](https://note.com/sepiablue) — setup guides and measured write-ups in Japanese ([article index](https://note.com/sepiablue/n/n8e612c619a3e))
+- [Sayaka Benchmark](https://sayakabenchmark.pages.dev/) — speed and quality comparison of H3 workflows
+
+| Repository | What it does |
+|---|---|
+| [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) | INT8 X2 VAE and asynchronous NVENC saving; the output stage here and the "before" workflow |
+| [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) | LBH 3+1: 3 low-resolution steps + 1 high-resolution step; the base of the fast variant |
+| [ComfyUI-MiniMax-H3-W4A4-VSA](https://github.com/sepiablue-ai/ComfyUI-MiniMax-H3-W4A4-VSA) | Ref2VA acceleration with FC1 W4A4 and Streaming VSA |
 
 ## License
 
