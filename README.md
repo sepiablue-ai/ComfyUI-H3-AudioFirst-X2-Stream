@@ -109,6 +109,16 @@ Windows with NVIDIA CUDA. Developed and measured on an RTX 4070 12 GB with Comfy
 
 ComfyUI must provide native MiniMax H3 (MiniMaxH3ImageToVideo, MiniMaxH3SigmaShift) and BlockSparseAttention. Measurements used Dynamic VRAM with `--disable-pinned-memory`. Output uses [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream). Setup never updates ComfyUI or PyTorch.
 
+## Install with ComfyUI-Manager (easiest)
+
+1. In ComfyUI-Manager, search for and install **H3 AudioFirst X2 Stream** ([h3-audiofirst-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-audiofirst-x2-stream)) and **H3 X2 Stream** ([h3-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-x2-stream)), which every example uses for saving. For the fast variant, also install **H3 LBH X2 Stream** ([h3-lbh-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-lbh-x2-stream)). The Manager built into recent ComfyUI is enabled with `--enable-manager`.
+2. Restart ComfyUI.
+3. Copy the image from [`examples/assets`](examples/assets) into `ComfyUI/input/`. Manager does not copy sample inputs.
+
+Manager installs the code and Python requirements; models are still placed by hand (see [Models](#models)). Prepare the X2 INT8 decoder once with [00_prepare_x2.json](examples/00_prepare_x2.json); for the fast variant, the F12 Loader prepares its cache (about 0.93 GB) on first use. Tested on 2026-10-15 with ComfyUI 0.38.0 and ComfyUI-Manager 4.2.2: all three packs installed without warnings, restart, all nodes registered and the standard and fast examples loaded. Video generation was not part of that test.
+
+Use one installation method only. Manager installs into `custom_nodes/h3-audiofirst-x2-stream`, `custom_nodes/h3-x2-stream` and `custom_nodes/h3-lbh-x2-stream`, while `setup.bat` looks for `ComfyUI-H3-X2-Stream` and `ComfyUI-H3-LBH-X2-Stream`. If the dependencies came from Manager, do not run `setup.bat --install-dependencies` or `--with-lbh`; they would add second copies and register the same nodes twice.
+
 ## Windows setup
 
 Place this repo at `ComfyUI/custom_nodes/ComfyUI-H3-AudioFirst-X2-Stream/`, or run setup.bat from any folder. Stop ComfyUI first.

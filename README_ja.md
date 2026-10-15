@@ -109,6 +109,16 @@ WindowsとNVIDIA CUDA向けです。開発検証はRTX 4070 12GB、ComfyUI 0.38.
 
 ComfyUIにネイティブMiniMax H3（MiniMaxH3ImageToVideo、MiniMaxH3SigmaShift）とBlockSparseAttentionが必要です。実測はDynamic VRAM有効、`--disable-pinned-memory`で行いました。出力には[ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream)を使います。ComfyUI本体やPyTorchはsetupで更新しません。
 
+## ComfyUI-Managerで導入（いちばん簡単）
+
+1. ComfyUI-Managerで **H3 AudioFirst X2 Stream**（[h3-audiofirst-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-audiofirst-x2-stream)）と、すべてのexampleが保存に使う **H3 X2 Stream**（[h3-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-x2-stream)）を検索してインストールします。高速版を使う場合は **H3 LBH X2 Stream**（[h3-lbh-x2-stream](https://registry.comfy.org/publishers/sepiablue-ai/nodes/h3-lbh-x2-stream)）も入れます。最近のComfyUIに内蔵されたManagerは、`--enable-manager` を付けて起動すると使えます。
+2. ComfyUIを再起動します。
+3. [`examples/assets`](examples/assets)の画像を `ComfyUI/input/` にコピーします。Managerはサンプル画像をコピーしません。
+
+Managerが導入するのはコードとPythonの依存関係です。モデルは自分で配置してください（[モデル](#モデル)）。X2のINT8 decoderは[00_prepare_x2.json](examples/00_prepare_x2.json)で一度準備します。高速版のF12キャッシュ（約0.93GB）は、F12 Loaderが初回に準備します。2026年10月15日にComfyUI 0.38.0とComfyUI-Manager 4.2.2で、3つのパックの警告なしのインストール、再起動、全ノードの登録、標準版・高速版exampleの読み込みを確認しました。この確認では動画生成までは行っていません。
+
+導入方法はどちらか一方にしてください。Managerは `custom_nodes/h3-audiofirst-x2-stream`、`custom_nodes/h3-x2-stream`、`custom_nodes/h3-lbh-x2-stream` に入りますが、`setup.bat` は `ComfyUI-H3-X2-Stream` と `ComfyUI-H3-LBH-X2-Stream` を探します。依存パックをManagerで入れた場合は、`setup.bat --install-dependencies` や `--with-lbh` を実行しないでください。2つ目が入り、同じノードが二重に登録されます。
+
 ## Windowsセットアップ
 
 このrepoを`ComfyUI/custom_nodes/ComfyUI-H3-AudioFirst-X2-Stream/`へ配置するか、任意のフォルダからsetup.batを実行してください。ComfyUIを停止してから準備します。
