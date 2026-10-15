@@ -1,6 +1,6 @@
 [project]
 name = "h3-audiofirst-x2-stream"
-version = "0.2.0"
+version = "0.2.1"
 description = "MiniMax H3 audio-first two-pass generation for ComfyUI: reduces the metallic voice of fast settings by generating audio first and locking it. The fast LBH variant is about 18% faster than the standard 4-step workflow on an RTX 4070 12GB."
 readme = "README.md"
 license = {file = "LICENSE"}

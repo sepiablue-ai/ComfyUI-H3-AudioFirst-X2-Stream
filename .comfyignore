@@ -3,3 +3,6 @@ tests/
 docs/
 tmp/
 results/
+# Windows installer for manual (clone/ZIP) installs; ComfyUI-Manager installs dependencies itself.
+setup.py
+setup.bat
