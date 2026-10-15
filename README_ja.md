@@ -23,20 +23,23 @@ RTX 4070 12GB、1088×1920・音声付き動画の実測です。
 
 ## サンプル比較
 
-どちらも左が従来（X2 Stream 4step）、右がAudioFirst（標準版）です。前半は左の音声、後半は同じ映像を最初から流して右の音声を再生します。再生中の側をオレンジ枠で示しています。
+どの動画も、前半は左の音声、後半は同じ映像を最初から流して右の音声を再生します。再生中の側をオレンジ枠で示しています。「従来」は[ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream)同梱の4step FL2VAワークフローです。
 
-| 内容 | 動画 |
-|---|---|
-| 14秒・日本語のセリフ5文 | ▶ [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
-| 14秒・ギターを弾きながら英語の歌 | ▶ [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
+### 高速版（LBH）と従来の比較 — 14秒・ギター弾き語り
 
-歌のサンプルは1248×1824の画像を縦横比を保って657×960に縮小し、中央を切り抜いて544×960で生成しています（同梱exampleと同じ解像度）。
+左が従来（X2 Stream 4step、172.1秒）、右がAudioFirst高速版（LBH、137.9秒）です。同じ画像・プロンプト・seed43で、2026年10月14日に同じセッションで計測しました。640×928で生成し（高速版は448×640→640×928）、1280×1856で保存しています。
 
-**14 s, five Japanese dialogue lines**
+https://github.com/user-attachments/assets/9f9d5269-91d0-48e7-ba7b-cbe817d62ae3
+
+### 標準版と従来の比較 — 14秒・日本語のセリフ5文
+
+左が従来（X2 Stream 4step）、右がAudioFirst標準版です。
 
 https://github.com/user-attachments/assets/cf5235c9-6f93-48f9-b12a-ee7db16d43b5
 
-**14 s, singing in English while playing guitar**
+### 標準版と従来の比較 — 14秒・ギターを弾きながら英語の歌
+
+左が従来（X2 Stream 4step）、右がAudioFirst標準版です。1248×1824の画像を縦横比を保って657×960に縮小し、中央を切り抜いて544×960で生成しています（同梱exampleと同じ解像度）。
 
 https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
 

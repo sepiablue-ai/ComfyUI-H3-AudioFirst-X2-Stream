@@ -23,22 +23,25 @@ Measured on an RTX 4070 12 GB, 1088 × 1920 video with audio:
 
 ## Sample comparisons
 
-Left is before (X2 Stream 4-step), right is AudioFirst (standard). The first half plays the left audio; the same picture then plays again from the start with the right audio. The orange frame marks the side being heard.
+Each video plays the left side's audio first, then plays the same picture again from the start with the right side's audio. The orange frame marks the side being heard. "Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream).
 
-| Content | Video |
-|---|---|
-| 14 s, five Japanese dialogue lines | ▶ [docs/media/compare_14s_talk.mp4](docs/media/compare_14s_talk.mp4) |
-| 14 s, singing in English while playing guitar | ▶ [docs/media/compare_14s_sing.mp4](docs/media/compare_14s_sing.mp4) |
+### Fast (LBH) vs before — 14 s, singing with guitar
 
-**14 s, five Japanese dialogue lines**
+Left: before (X2 Stream 4-step, 172.1 s). Right: AudioFirst fast (LBH, 137.9 s). Same image, prompt and seed 43, measured in one session on 2026-10-14. Generated at 640 × 928 (fast: 448 × 640 → 640 × 928) and saved at 1280 × 1856.
+
+https://github.com/user-attachments/assets/9f9d5269-91d0-48e7-ba7b-cbe817d62ae3
+
+### Standard vs before — 14 s, five Japanese dialogue lines
+
+Left: before (X2 Stream 4-step). Right: AudioFirst standard.
 
 https://github.com/user-attachments/assets/cf5235c9-6f93-48f9-b12a-ee7db16d43b5
 
-**14 s, singing in English while playing guitar**
+### Standard vs before — 14 s, singing in English while playing guitar
+
+Left: before (X2 Stream 4-step). Right: AudioFirst standard. The image (1248 × 1824) was resized to 657 × 960 without changing its aspect ratio and center-cropped to 544 × 960, the same resolution as the bundled examples.
 
 https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
-
-The singing sample resizes a 1248 × 1824 image to 657 × 960 without changing its aspect ratio and center-crops it to 544 × 960, the same resolution as the bundled examples.
 
 ## How it works
 
