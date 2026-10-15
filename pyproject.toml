@@ -1,11 +1,25 @@
 [project]
-name = "comfyui-h3-audiofirst-x2-stream"
-version = "0.1.0"
-description = "MiniMax H3 audio-first two-pass generation: a 32x32 audio pass, then the 022 video pass with the voice locked, and X2 streaming output"
+name = "h3-audiofirst-x2-stream"
+version = "0.2.0"
+description = "MiniMax H3 audio-first two-pass generation for ComfyUI: reduces the metallic voice of fast settings by generating audio first and locking it. The fast LBH variant is about 18% faster than the standard 4-step workflow on an RTX 4070 12GB."
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.11"
 dependencies = []
+classifiers = [
+    "Operating System :: Microsoft :: Windows",
+    "Environment :: GPU :: NVIDIA CUDA",
+]
+
+[project.urls]
+Repository = "https://github.com/sepiablue-ai/ComfyUI-H3-AudioFirst-X2-Stream"
+Documentation = "https://github.com/sepiablue-ai/ComfyUI-H3-AudioFirst-X2-Stream#readme"
+"Bug Tracker" = "https://github.com/sepiablue-ai/ComfyUI-H3-AudioFirst-X2-Stream/issues"
 
 [tool.comfy]
+PublisherId = "sepiablue-ai"
 DisplayName = "H3 AudioFirst X2 Stream"
+requires-comfyui = ">=0.38.0"
+# Use the Python belonging to ComfyUI. CUDA/PyTorch are supplied by ComfyUI.
+# This package has no extra Python dependencies.
+# X2 Stream supplies av and comfy-kitchen through its own requirements.
