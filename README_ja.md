@@ -32,6 +32,14 @@ RTX 4070 12GB、1088×1920・音声付き動画の実測です。
 
 歌のサンプルは1248×1824の画像を縦横比を保って657×960に縮小し、中央を切り抜いて544×960で生成しています（同梱exampleと同じ解像度）。
 
+**14 s, five Japanese dialogue lines**
+
+https://github.com/user-attachments/assets/cf5235c9-6f93-48f9-b12a-ee7db16d43b5
+
+**14 s, singing in English while playing guitar**
+
+https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
+
 ## 仕組み
 
 先に32×32の小さな画面で音声だけを8stepで作り切り、その音声を固定したまま従来と同じ映像パスで動画を生成します。X2 VAEと非同期NVENC保存で1088×1920を出力します。映像パスは[さやかベンチマーク](https://sayakabenchmark.pages.dev/)のFL2VA構成をそのまま使うため、画質は従来と同等です。
