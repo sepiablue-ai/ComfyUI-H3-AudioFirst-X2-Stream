@@ -14,6 +14,7 @@ English | [日本語](README_ja.md)
 - **About 21% faster than the fast (LBH) variant in the same session**: 14 s, 126.0 s → 99.8 s.
 - **Other images and prompts stay near 100 s**: three 14 s anime clips at 1280 × 1856 took 104.7–105.3 s (fast variant: 134.8–136.7 s).
 - **The audio improves as well**: the voice is generated first and locked, which reduces the "talking inside a metal pipe" sound of fast settings.
+- **Trade-off**: fine detail is softer than with the fast variant. See [Speed mode](#speed-mode).
 
 | 14 s dialogue video | Generation time | Audio |
 |---|---:|---|
@@ -77,6 +78,8 @@ The speed mode runs those three steps at 256 × 448 and skips 10 of the 50 DiT b
 ## Speed mode
 
 The speed mode is the fast workflow with two changes: the three low-resolution steps run at 256 × 448 instead of 384 × 672, and the last step at 544 × 960 skips 10 of the 50 DiT blocks. The audio pass and lock are unchanged, so the audio is identical to the fast variant. The picture is a different take of the same prompt because the earlier steps run at a different size.
+
+**Picture quality:** steps 1–3 use about half the pixels of the fast variant, so fine detail comes out softer: hair strands, eyelashes and busy backgrounds such as flower fields, most visibly when the face fills much of the frame. In a 14 s close-up test (a woman sitting in a daisy meadow, 1280 × 1856) the speed mode was clearly softer than the fast variant, and running the last step without block skipping made almost no difference, so the low resolution of the earlier steps is the cause. When picture quality matters more than time, use the fast or the standard workflow.
 
 | | Fast (LBH) | Speed |
 |---|---|---|
