@@ -10,15 +10,16 @@ Measured on an RTX 4070 12 GB, 1088 × 1920 video with audio:
 |---|---:|---|
 | Before (X2 Stream 4-step) | 153.8 s (2 min 33.8 s) | Often metallic |
 | AudioFirst standard | 165.1 s (2 min 45.1 s) | Improved |
-| **AudioFirst fast (LBH)** | **125.7 s (2 min 5.7 s)** | **Improved** |
+| AudioFirst fast (LBH) | 125.7 s (2 min 5.7 s) | Improved |
+| **AudioFirst speed (new)** | **99.8 s (1 min 39.8 s)** | **Improved (same audio as fast)** |
 
 - **About 18% faster, with better audio**: 14 s dialogue, 153.8 s → 125.7 s (-28.1 s).
 - **About 20% faster in a same-session comparison**: 14 s singing with guitar (640 × 928), 172.1 s before → 137.9 s fast.
 - **No slower at 5 s**: the fast variant takes 60.0 s, about the same as before (about 60.8 s), with better audio.
 - **Standard keeps the picture unchanged**: the video pass is identical to before; only the audio is replaced (about 11 s added).
-- **New speed mode, about 22% faster than fast with the same audio**: 14 s, 131.9 s → 102.9 s in a same-session comparison; 5 s takes 57.3 s and 10 s 77.5 s. See [Speed mode](#speed-mode).
+- **New speed mode: 14 s in under 100 s with the same audio as fast**: 99.8 s against 126.0 s for fast in the same session (-20.8%); 5 s 52.7 s, 10 s 77.1 s. See [Speed mode](#speed-mode).
 
-"Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means); the three rows above were measured on different days and include a few seconds of day-to-day variation. See [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
+"Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means); the rows above were measured on different days and include a few seconds of day-to-day variation. See [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
 
 > Author: Kamimoto (かみもと) | Quick results on **[X (@sep_is_heim)](https://x.com/sep_is_heim)**, write-ups (Japanese) on **[note](https://note.com/sepiablue)** ([article index](https://note.com/sepiablue/n/n8e612c619a3e)).
 
@@ -81,13 +82,13 @@ The speed mode is the fast workflow with two changes: the three low-resolution s
 | Step 4 (544 × 960) | All 50 DiT blocks | Blocks 9–12, 14–18 and 20 skipped |
 | Extra install | LBH X2 Stream, LBH 3D upscaler, F12 cache | Same as fast |
 
-| Video | Fast (LBH) | Speed |
-|---|---:|---:|
-| 5 s | – | 57.3 s |
-| 10 s | – | 77.5 s |
-| 14 s | 131.9 s (2 min 11.9 s) | 102.9 s (1 min 42.9 s) |
+| Video | Fast (LBH) | Speed | Difference |
+|---|---:|---:|---:|
+| 5 s | 61.1 s (1 min 1.1 s) | 52.7 s | -8.4 s (-13.7%) |
+| 10 s | 94.2 s (1 min 34.2 s) | 77.1 s (1 min 17.1 s) | -17.1 s (-18.2%) |
+| 14 s | 126.0 s (2 min 6.0 s) | 99.8 s (1 min 39.8 s) | -26.2 s (-20.8%) |
 
-Single runs of the packaged examples (seed 43) in one session on 2026-10-22 with ComfyUI 0.42.0. Other applications were using the GPU during this session, and the same 14 s fast example took 125.7 s in an earlier, quieter session, so compare the columns rather than the absolute values.
+Single runs of the packaged examples (seed 43), fast and speed alternating, in one quiet session on 2026-10-22 with ComfyUI 0.42.0. The fast times match the earlier measurements on ComfyUI 0.38.0 (60.0, 93.6 and 125.7 s).
 
 Choosing the blocks: each block was bypassed alone in the last step (at 256 × 448, 14 s, seed 48) and the change of the resulting video latent was measured, following the vital-layer analysis of [Stable Flow](https://arxiv.org/abs/2411.14430). The ten blocks with the smallest change are skipped; blocks 0–2, 29–33, 48 and 49 mattered most. Skipping applies only to the last step, where the audio is already locked. Compared within one run (identical earlier steps), the speed-mode last step differed from the unskipped one by PSNR 24 dB and SSIM 0.85 at 1088 × 1920, while two unskipped last steps differed by 40.9 dB and 0.987. Line sharpness and frame-to-frame flicker did not change, the result looked equally detailed for seeds 48 and 50, and lip sync was judged fine. Ten blocks chosen by a simpler rule (the smallest change of the hidden state, blocks 3–17) lost iris detail, so the choice matters.
 

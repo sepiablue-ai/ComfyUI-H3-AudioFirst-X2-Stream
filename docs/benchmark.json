@@ -726,7 +726,7 @@
   "speed_mode": {
     "date": "2026-10-22",
     "platform": "Windows 11, ComfyUI 0.42.0, same Python/PyTorch venv as the earlier records; RTX 4070 12GB at 150 W",
-    "server": "--disable-pinned-memory --cache-none, Dynamic VRAM; other desktop applications were using GPU 0 (about 25-30% idle utilization), so absolute times are higher than in the earlier quiet sessions",
+    "server": "--disable-pinned-memory --cache-none, Dynamic VRAM; quiet session (GPU 0 at 0% before the runs), one warm-up run excluded, fast and speed alternating",
     "workflow": "fast (LBH) example with low 256x448 instead of 384x672 and H3AudioFirstSkipBlocks (blocks 9,10,11,12,14,15,16,17,18,20) on the step-4 model only. Run copies changed only the output names, added SaveAudio, pointed the F12 Loader at the existing cache with prepare off, and used seed 48 for the equivalence run",
     "block_selection": "single-block bypass of the last step at 256x448 (14 s, seed 48): relative L2 change of the video latent; run-to-run floor 0.051, every block >= 0.149; the ten smallest were skipped; largest: 1, 0, 49, 48, 32, 2, 33, 31, 30, 29",
     "quality_checks": {
@@ -755,100 +755,139 @@
     },
     "runs": [
       {
-        "run_id": "afs_eq_s48",
-        "example": "examples/api/fl2va_audiofirst_speed_14s.api.json",
-        "seed": 48,
-        "prompt_id": "f5dee7c8-ad6c-4541-bc5e-8f139f64e04e",
-        "generation_seconds": 108.343,
-        "stages_seconds": {
-          "conditioning": 9.175,
-          "audio_sampler": 19.124,
-          "low_res_sampler": 17.699,
-          "lbh_handoff": 2.845,
-          "high_res_sampler": 24.575,
-          "x2_decode_save": 32.214
-        },
-        "peak_vram_mib": 11597.0,
-        "peak_ram_mib_main_process": 8931.0,
-        "workflow_sha256": "688f80cc9bf3cf6cbcd0c000c4a84f7233e036cc7c0e4382d9b8ad115594c69c",
-        "video_sha256": "70bccc00aa611ea4c5cad24ceb7b7818dde07fa7d0793feab47c5e6aabefd2c6"
-      },
-      {
-        "run_id": "afs_lbh_14s",
-        "example": "examples/api/fl2va_audiofirst_lbh_14s.api.json",
+        "run_id": "q_lbh_05s",
+        "example": "examples/api/fl2va_audiofirst_lbh_05s.api.json",
         "seed": 43,
-        "prompt_id": "dc866196-9ac1-4102-9044-b6df58930b29",
-        "generation_seconds": 131.935,
+        "prompt_id": "10c3bd43-f7ba-4d5c-854a-1e7fee62342b",
+        "generation_seconds": 61.119,
         "stages_seconds": {
-          "conditioning": 9.178,
-          "audio_sampler": 19.175,
-          "low_res_sampler": 37.397,
-          "lbh_handoff": 2.994,
-          "high_res_sampler": 29.475,
-          "x2_decode_save": 31.152
+          "conditioning": 8.67,
+          "audio_sampler": 14.584,
+          "low_res_sampler": 12.857,
+          "lbh_handoff": 1.361,
+          "high_res_sampler": 9.682,
+          "x2_decode_save": 11.903
         },
-        "peak_vram_mib": 11479.0,
-        "peak_ram_mib_main_process": 8936.4,
-        "workflow_sha256": "e98fdfd552797077493299d9895f9f75e64e5e31d4899c07e889fea15db17228",
-        "video_sha256": "949c4b4f04d3a43b1b438d2185bc391ecb8a8f85328db6686bdfd90124f182dc"
+        "peak_vram_mib": 11579.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "198649433e627e68340b92da0376b7f467e8ffbf2bb9b942871259b863005783",
+        "video_sha256": "1bbad6e9cea014c111b123fc5e211e79822f1be2e5a283e1f3ee56f224e37083"
       },
       {
-        "run_id": "afs_speed_14s",
-        "example": "examples/api/fl2va_audiofirst_speed_14s.api.json",
-        "seed": 43,
-        "prompt_id": "3fffd10d-267c-489a-b8c1-30fa62f1a722",
-        "generation_seconds": 102.874,
-        "stages_seconds": {
-          "conditioning": 8.784,
-          "audio_sampler": 16.893,
-          "low_res_sampler": 16.98,
-          "lbh_handoff": 2.457,
-          "high_res_sampler": 23.704,
-          "x2_decode_save": 31.792
-        },
-        "peak_vram_mib": 11582.0,
-        "peak_ram_mib_main_process": 8936.4,
-        "workflow_sha256": "f30f116bd7983c0109585c19e0c8c69cfd9432ac543a6ec1a0ca64f659662864",
-        "video_sha256": "6b7cceb6c0f28b4fd2d107cd40d5e4ba0c8ae6257ec263a3ab3453256e173af1"
-      },
-      {
-        "run_id": "afs_speed_05s",
+        "run_id": "q_speed_05s",
         "example": "examples/api/fl2va_audiofirst_speed_05s.api.json",
         "seed": 43,
-        "prompt_id": "657182d4-5c61-40d8-916b-79495bce02cc",
-        "generation_seconds": 57.255,
+        "prompt_id": "b8203714-e993-4b85-8a3b-a521756a1a94",
+        "generation_seconds": 52.736,
         "stages_seconds": {
-          "conditioning": 9.059,
-          "audio_sampler": 17.041,
-          "low_res_sampler": 7.247,
-          "lbh_handoff": 1.229,
-          "high_res_sampler": 8.284,
-          "x2_decode_save": 12.292
+          "conditioning": 8.541,
+          "audio_sampler": 14.634,
+          "low_res_sampler": 6.95,
+          "lbh_handoff": 1.186,
+          "high_res_sampler": 7.704,
+          "x2_decode_save": 11.845
         },
-        "peak_vram_mib": 11680.0,
-        "peak_ram_mib_main_process": 8936.4,
-        "workflow_sha256": "559e89cead91708fa004b4962e711ab42a15ade1accca3012a6ba4c396e66de2",
-        "video_sha256": "019d9fec1d0d4bebe4030cf590f23f1063c062e1c32c24693e19e9a08bafd9b8"
+        "peak_vram_mib": 11467.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "90f98ee9f042c24f5a1dcfbf771ec1ed227029f021f021a31315c6c74eab6201",
+        "video_sha256": "6e528879b7e24bcfb216476ab3e21c92377fae38b287375eda1481fdf9cf518c"
       },
       {
-        "run_id": "afs_speed_10s",
+        "run_id": "q_lbh_10s",
+        "example": "examples/api/fl2va_audiofirst_lbh_10s.api.json",
+        "seed": 43,
+        "prompt_id": "8dc18f2d-65a3-4ff3-a8d0-696b21a16377",
+        "generation_seconds": 94.2,
+        "stages_seconds": {
+          "conditioning": 8.763,
+          "audio_sampler": 14.928,
+          "low_res_sampler": 24.433,
+          "lbh_handoff": 2.17,
+          "high_res_sampler": 19.615,
+          "x2_decode_save": 22.224
+        },
+        "peak_vram_mib": 11467.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "21e6ae1200359a0c90667096ac34310094d12b7da7366173b61abac91616d057",
+        "video_sha256": "3564cdfc75e6e12614ebf35be0ffa12e8c5d39ddcb902181af05c2ba48c0ad69"
+      },
+      {
+        "run_id": "q_speed_10s",
         "example": "examples/api/fl2va_audiofirst_speed_10s.api.json",
         "seed": 43,
-        "prompt_id": "efe67485-1ecd-4f07-a429-0956862318bb",
-        "generation_seconds": 77.517,
+        "prompt_id": "86277179-e707-460e-9c0b-5b91db9f26bc",
+        "generation_seconds": 77.101,
         "stages_seconds": {
-          "conditioning": 8.637,
-          "audio_sampler": 14.703,
-          "low_res_sampler": 11.946,
-          "lbh_handoff": 1.842,
-          "high_res_sampler": 16.02,
-          "x2_decode_save": 22.334
+          "conditioning": 8.805,
+          "audio_sampler": 14.564,
+          "low_res_sampler": 12.002,
+          "lbh_handoff": 1.898,
+          "high_res_sampler": 15.557,
+          "x2_decode_save": 22.196
         },
-        "peak_vram_mib": 11632.0,
-        "peak_ram_mib_main_process": 8936.4,
-        "workflow_sha256": "668a93a0db098b5206c4afc1a066c3ee92ce0f3ae6668b2aefbee715d3b21d6a",
-        "video_sha256": "9d6ff5ee9a69345b7e0cbae4e723031355c45a125106be1289be88ae20cde720"
+        "peak_vram_mib": 11523.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "7f4b01e268ccfb5af8a87443e5c5b329fe24d0853afbab4f63330e3fe5da0ad1",
+        "video_sha256": "1066f601d6f2cf49856e0af9d23711c77867adea0b3de1df8e57d4ee1b43aec6"
+      },
+      {
+        "run_id": "q_lbh_14s",
+        "example": "examples/api/fl2va_audiofirst_lbh_14s.api.json",
+        "seed": 43,
+        "prompt_id": "41a59ff3-1201-4737-972f-13b6e1470fbd",
+        "generation_seconds": 126.031,
+        "stages_seconds": {
+          "conditioning": 8.827,
+          "audio_sampler": 14.649,
+          "low_res_sampler": 36.889,
+          "lbh_handoff": 2.981,
+          "high_res_sampler": 29.367,
+          "x2_decode_save": 31.051
+        },
+        "peak_vram_mib": 11483.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "aa5f7d5cb3fb72344e81345cbf113afe6f5833394240e9ab3b14bae1469aed46",
+        "video_sha256": "b3c3c760ae700748b412d258be3a7b39d2652158c7d1b0a8900a9cd65e437f41"
+      },
+      {
+        "run_id": "q_speed_14s",
+        "example": "examples/api/fl2va_audiofirst_speed_14s.api.json",
+        "seed": 43,
+        "prompt_id": "5f4e20bc-9aca-4020-b890-b8d20e7ee598",
+        "generation_seconds": 99.8,
+        "stages_seconds": {
+          "conditioning": 8.791,
+          "audio_sampler": 14.744,
+          "low_res_sampler": 16.898,
+          "lbh_handoff": 2.468,
+          "high_res_sampler": 23.652,
+          "x2_decode_save": 30.922
+        },
+        "peak_vram_mib": 11562.0,
+        "peak_ram_mib_main_process": 8865.7,
+        "workflow_sha256": "1adaca5fefe52608ce8a14d812c3e9cb4450fc2b16468910cbe72ceb6afddb86",
+        "video_sha256": "41a22974a19bb5e0d7db2e692ae891eadba861c1c49d7880666cfb8fe387c3e3"
       }
-    ]
+    ],
+    "equivalence_run": {
+      "run_id": "afs_eq_s48",
+      "example": "examples/api/fl2va_audiofirst_speed_14s.api.json",
+      "seed": 48,
+      "prompt_id": "f5dee7c8-ad6c-4541-bc5e-8f139f64e04e",
+      "generation_seconds": 108.343,
+      "stages_seconds": {
+        "conditioning": 9.175,
+        "audio_sampler": 19.124,
+        "low_res_sampler": 17.699,
+        "lbh_handoff": 2.845,
+        "high_res_sampler": 24.575,
+        "x2_decode_save": 32.214
+      },
+      "peak_vram_mib": 11597.0,
+      "peak_ram_mib_main_process": 8931.0,
+      "workflow_sha256": "688f80cc9bf3cf6cbcd0c000c4a84f7233e036cc7c0e4382d9b8ad115594c69c",
+      "video_sha256": "70bccc00aa611ea4c5cad24ceb7b7818dde07fa7d0793feab47c5e6aabefd2c6"
+    },
+    "contended_session": "An earlier session the same day with other applications on GPU 0 gave fast 14 s 131.9 s and speed 14 s 102.9 s, 5 s 57.3 s, 10 s 77.5 s; superseded by the quiet runs"
   }
 }
