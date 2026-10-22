@@ -12,6 +12,9 @@ log = logging.getLogger(__name__)
 CATEGORY = "H3 AudioFirst X2 Stream"
 AUDIO_CANVAS = 32
 LOCK_TOLERANCE = 2e-5
+DIT_BLOCKS = 50
+# The ten blocks whose single-block bypass changed the final-step latent least (measured at 256x448, 14 s, seed 48).
+SPEED_SKIP_BLOCKS = "9,10,11,12,14,15,16,17,18,20"
 
 
 def audio_tensor(latent):
@@ -93,3 +96,52 @@ class H3AudioFirstCheckLock:
             raise ValueError(f"Audio lock changed the audio latent (max abs diff {difference:.3g})")
         log.info("[H3 AudioFirst] Audio lock preserved (max abs diff %.3g)", difference)
         return (samples,)
+
+
+def parse_blocks(text):
+    try:
+        blocks = sorted({int(value) for value in text.split(",") if value.strip()})
+    except ValueError:
+        raise ValueError(f"Block list must be comma-separated integers, got {text!r}") from None
+    if any(block < 0 or block >= DIT_BLOCKS for block in blocks):
+        raise ValueError(f"Block indices must be between 0 and {DIT_BLOCKS - 1}, got {text!r}")
+    return blocks
+
+
+class H3AudioFirstSkipBlocks:
+    """Bypass chosen DiT blocks; meant only for the final high-res step of the speed mode."""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "model": ("MODEL",),
+            "blocks": ("STRING", {"default": SPEED_SKIP_BLOCKS,
+                                  "tooltip": "Comma-separated DiT block indices (0-49) whose output is replaced by their input"}),
+        }}
+
+    RETURN_TYPES = ("MODEL",)
+    FUNCTION = "patch"
+    CATEGORY = CATEGORY
+    DESCRIPTION = ("Skip the listed MiniMax H3 blocks. Connect it only to the guider of the final high-res step: "
+                   "the audio is locked there, so only the picture changes. The default ten blocks were chosen by "
+                   "bypassing one block at a time and keeping those that changed the result least.")
+
+    def patch(self, model, blocks):
+        skip = set(parse_blocks(blocks))
+        if len(model.get_model_object("diffusion_model.blocks")) != DIT_BLOCKS:
+            raise ValueError(f"Block skipping requires the {DIT_BLOCKS}-block MiniMax H3 DiT")
+        patched = model.clone()
+        replace = patched.model_options.get("transformer_options", {}).get("patches_replace", {}).get("dit", {})
+
+        def make(index, inner):
+            # keep the block replacements already installed (sparse attention, QKV reuse) for the blocks that run
+            def block_patch(args, extra):
+                if index in skip:
+                    return {"img": args["img"]}
+                return inner(args, extra) if inner is not None else extra["original_block"](args)
+            return block_patch
+
+        for index in range(DIT_BLOCKS):
+            patched.set_model_patch_replace(make(index, replace.get(("double_block", index))), "dit", "double_block", index)
+        log.info("[H3 AudioFirst] Skipping %d DiT blocks: %s", len(skip), sorted(skip))
+        return (patched,)

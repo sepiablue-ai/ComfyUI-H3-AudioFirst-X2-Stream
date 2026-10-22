@@ -16,6 +16,7 @@ RTX 4070 12GB、1088×1920・音声付き動画の実測です。
 - **同じセッションでの比較でも約20%短縮**：14秒のギター弾き語り（640×928）で、従来172.1秒→高速版137.9秒。
 - **5秒でも遅くならない**：高速版60.0秒。従来（約60.8秒）とほぼ同じ時間で、音声だけ良くなります。
 - **標準版は画質そのまま**：映像の生成は従来と同一で、音声だけを置き換えます（追加は約11秒）。
+- **新しい速度優先モードは、同じ音声のまま高速版より約22%短縮**：同じセッションの比較で14秒が131.9秒→102.9秒、5秒は57.3秒、10秒は77.5秒。[速度優先モード](#速度優先モード)を参照してください。
 
 「従来」は[ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream)同梱の4step FL2VAワークフロー（544×960で4step、SLA 5%）です。数値は各1回（一部は2回平均）の実測で、上の表の3行は計測日が異なるため数秒の揺れを含みます。条件の詳細は[生成時間](#生成時間)と[実測記録](docs/benchmark.json)にあります。
 
@@ -49,6 +50,8 @@ https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
 
 高速版は、[ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream)のLBH 3+1（384×672で3step、拡大して544×960で1step）に同じ音声固定を組み合わせたワークフローです。
 
+速度優先モードは、その3stepを256×448で回し、最後のstepでDiTの50ブロックのうち10ブロックを飛ばします。音声パスは同じです。
+
 ## 標準版と高速版の使い分け
 
 | | 標準版 | 高速版（LBH） |
@@ -66,6 +69,27 @@ https://github.com/user-attachments/assets/0b0780da-1946-4184-9c7a-8a4a08fe61d8
 | 14秒・歌（640×928） | 187.2秒（3分7.2秒） | 137.9秒（2分17.9秒） | -49.3秒 |
 
 5・10秒と歌は2026年10月14日の同日計測（各1回）、14秒は標準版が10月13日、高速版が10月14日です。歌の高速版は448×640→640×928で生成し、同じセッションの従来版は172.1秒（2分52.1秒）でした。音声改善を入れないLBH 3+1と比べた追加時間は約12秒（5秒48.3→60.0秒、14秒113.6→125.7秒）でした。
+
+## 速度優先モード
+
+速度優先モードは、高速版のワークフローに2点だけ手を加えたものです。低解像度の3stepを384×672ではなく256×448で回し、544×960の最後の1stepでDiTの50ブロックのうち10ブロックを飛ばします。音声パスと音声固定は同じなので、音声は高速版と完全に同じです。前段の解像度が違うため、映像は同じプロンプトの別テイクになります。
+
+| | 高速版（LBH） | 速度優先 |
+|---|---|---|
+| 音声パス | 32×32で8step | 同じ（デコード後の音声は高速版と完全一致） |
+| 1〜3step | 384×672 | 256×448 |
+| 4step（544×960） | DiT 50ブロックすべて | ブロック9〜12、14〜18、20を飛ばす |
+| 追加の導入 | LBH X2 Stream、LBH 3D upscaler、F12キャッシュ | 高速版と同じ |
+
+| 動画 | 高速版（LBH） | 速度優先 |
+|---|---:|---:|
+| 5秒 | – | 57.3秒 |
+| 10秒 | – | 77.5秒 |
+| 14秒 | 131.9秒（2分11.9秒） | 102.9秒（1分42.9秒） |
+
+配布exampleをseed43のまま各1回実行した、2026年10月22日の同一セッションの値です（ComfyUI 0.42.0）。このセッションは他のアプリもGPUを使っており、同じ高速版14秒が以前の静かなセッションでは125.7秒でした。絶対値ではなく、列どうしの差で比べてください。
+
+飛ばすブロックの選び方：[Stable Flow](https://arxiv.org/abs/2411.14430)の重要層の分析と同じく、最後のstepでブロックを1つずつ素通りさせ、出力の映像latentがどれだけ変わるかを測りました（256×448、14秒、seed48）。変化の小さい10ブロックを飛ばします。影響が大きかったのはブロック0〜2、29〜33、48、49です。飛ばすのは音声がすでに固定されている最後のstepだけです。前段まで同じ1回の実行の中で比べると、1088×1920で飛ばさない場合との差はPSNR 24dB・SSIM 0.85でした（飛ばさない2本どうしの差は40.9dB・0.987）。線の鋭さとフレーム間のちらつきは変わらず、seed48と50で描き込みは同等に見え、口パクも問題なしと判定しました。もっと単純な基準（隠れ状態の変化が小さい順、ブロック3〜17）で選んだ10ブロックでは瞳の描き込みが消えたので、選び方が重要です。
 
 ## 生成時間
 
@@ -176,6 +200,8 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 
 高速版は[5秒](examples/fl2va_audiofirst_lbh_05s.json)、[10秒](examples/fl2va_audiofirst_lbh_10s.json)、[14秒](examples/fl2va_audiofirst_lbh_14s.json)です。長さを変える場合はShared image conditioningと「Audio pass conditioning (32x32)」の`length`を同じ値にします。解像度を変える場合は、Shared image conditioningの低・高解像度を同じ縦横比の32の倍数にし、LBH video upscale + continueのwidth・heightを高解像度と同じ値にします。初回はF12の準備に時間がかかります。
 
+速度優先モードは[5秒](examples/fl2va_audiofirst_speed_05s.json)、[10秒](examples/fl2va_audiofirst_speed_10s.json)、[14秒](examples/fl2va_audiofirst_speed_14s.json)です。高速版の低解像度を256×448にし、モデルと4stepのguiderの間に「Skip 10 DiT blocks (final step only)」を入れたものです。長さと解像度の変え方は高速版と同じです。このノードをバイパスすると、最後のstepを全ブロックで実行します。
+
 全例はseed43、res_multistep/simple、video/audio sigma shift 12/3、24fps、CQ18です。保存先はComfyUIのoutput/H3_AudioFirst_X2_Streamです。
 
 ### ノード
@@ -185,6 +211,7 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 | H3 AudioFirst 32x32 Audio Conditioning | 映像パスと同じ条件付けを使い、32×32のキーフレームと空latentを作る。TEは再実行しない |
 | H3 AudioFirst Lock Audio | 完成した音声latentを映像パスのlatentへ入れ、音声のnoise maskを0にする |
 | H3 AudioFirst Check Audio Lock | 映像パス後の音声latentが音声パスと一致しなければ停止する |
+| H3 AudioFirst Skip Blocks (final step) | 指定したDiTブロックを素通りさせる（既定は9〜12、14〜18、20）。最後のstepのguiderにだけつなぐ |
 
 音声パスのキーフレームは、ネイティブH3の先頭フレーム処理と同じく、入力画像をクロップせず32×32へ縮小します。音声の条件付けのためだけに使い、出力映像には影響しません。
 
@@ -193,6 +220,8 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 [実測記録](docs/benchmark.json)に、各runのprompt_id、プロンプト・ワークフロー・動画のSHA-256、工程別時間、step数の選定経緯を記録しています。
 
 表のAudioFirstの値のうち5・10・14秒は、配布版のexampleを出力名だけ変えて実行したものです（歌は14秒exampleの画像・プロンプト・切り抜きだけを変更）。5秒の2回は音声がデコード後に完全一致し、全runで音声固定を確認しました。ノード名を配布版へ変更した際の6step検証では、音声が実験版と完全一致し、映像は実験版のrun同士の差と同程度（PSNR約25dB）でした。このPCの設定では映像サンプリングがrun間でビット一致しません。[検証記録](docs/validation.json)。
+
+速度優先モード：14秒exampleをseed48で実行した音声は元の実験runとデコード後に完全一致し、速度優先と高速版の14秒example（seed43）の音声も完全一致しました。新規導入試験はまだです。
 
 全exampleのComfyUI入力検査とGUI/API往復の一致、setupの再実行・上書き拒否、exampleの設定値を確認しています。
 

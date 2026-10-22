@@ -11,3 +11,5 @@ Package code is GPL-3.0; see LICENSE. No model weights, converted weights or gen
 Measurements are in docs/benchmark.json and the package check is in docs/validation.json. No private experiment folder is required at runtime.
 
 The optional fast workflows use [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (GPL-3.0, by sepiablue-ai) at commit 070b78cd7519b56d6684dcaf45ac6bd5f827dbda, installed only with `--with-lbh`. Its LBH upscaler weights and vendored MIT code keep the terms listed in that repository's NOTICE.
+
+The speed mode uses the same LBH dependency. Its skipped-block list was measured with a single-block bypass test modelled on the vital-layer analysis of Stable Flow (Avrahami et al., CVPR 2025, [arXiv 2411.14430](https://arxiv.org/abs/2411.14430)); only the idea is used, no code from that project.

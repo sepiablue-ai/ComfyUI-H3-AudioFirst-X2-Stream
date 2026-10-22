@@ -39,8 +39,25 @@ class ExampleTests(unittest.TestCase):
             self.assertEqual(graph["92"]["inputs"]["samples"], ["207", 0])
             self.assertEqual(graph["121"]["inputs"]["samples"], ["205", 0])
 
+    def test_speed_settings(self):
+        for tag, frames in FRAMES.items():
+            graph = self.load("speed_" + tag)
+            lbh = self.load("lbh_" + tag)
+            self.assertEqual(graph["131"]["inputs"]["length"], frames)
+            self.assertEqual((graph["131"]["inputs"]["low_width"], graph["131"]["inputs"]["low_height"]), (256, 448))
+            self.assertEqual((graph["131"]["inputs"]["high_width"], graph["131"]["inputs"]["high_height"]), (544, 960))
+            self.assertEqual(graph["203"]["inputs"]["steps"], 8)
+            self.assertEqual(graph["209"]["class_type"], "H3AudioFirstSkipBlocks")
+            self.assertEqual(graph["209"]["inputs"], {"model": ["173", 0], "blocks": "9,10,11,12,14,15,16,17,18,20"})
+            self.assertEqual(graph["166"]["inputs"]["model"], ["209", 0])
+            self.assertEqual(graph["126"]["inputs"]["model"], ["173", 0])
+            self.assertEqual(graph["204"]["inputs"]["model"], lbh["204"]["inputs"]["model"])
+            # everything else is the LBH example
+            for key in set(lbh) - {"131", "166", "92"}:
+                self.assertEqual(graph[key]["inputs"], lbh[key]["inputs"], f"{tag}:{key}")
+
     def test_connections_and_gui_copies(self):
-        for tag in [*FRAMES, *("lbh_" + t for t in FRAMES)]:
+        for tag in [*FRAMES, *("lbh_" + t for t in FRAMES), *("speed_" + t for t in FRAMES)]:
             graph = self.load(tag)
             for key, node in graph.items():
                 for value in node["inputs"].values():

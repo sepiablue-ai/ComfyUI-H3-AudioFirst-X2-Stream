@@ -16,6 +16,7 @@ Measured on an RTX 4070 12 GB, 1088 × 1920 video with audio:
 - **About 20% faster in a same-session comparison**: 14 s singing with guitar (640 × 928), 172.1 s before → 137.9 s fast.
 - **No slower at 5 s**: the fast variant takes 60.0 s, about the same as before (about 60.8 s), with better audio.
 - **Standard keeps the picture unchanged**: the video pass is identical to before; only the audio is replaced (about 11 s added).
+- **New speed mode, about 22% faster than fast with the same audio**: 14 s, 131.9 s → 102.9 s in a same-session comparison; 5 s takes 57.3 s and 10 s 77.5 s. See [Speed mode](#speed-mode).
 
 "Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means); the three rows above were measured on different days and include a few seconds of day-to-day variation. See [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
 
@@ -49,6 +50,8 @@ The voice is finished first in an 8-step audio-only pass on a tiny 32 × 32 canv
 
 The fast variant combines the same audio lock with LBH 3+1 from [ComfyUI-H3-LBH-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-LBH-X2-Stream) (3 steps at 384 × 672, then upscaled for 1 step at 544 × 960).
 
+The speed mode runs those three steps at 256 × 448 and skips 10 of the 50 DiT blocks in the last step; the audio pass is unchanged.
+
 ## Standard or fast
 
 | | Standard | Fast (LBH) |
@@ -66,6 +69,27 @@ The fast variant combines the same audio lock with LBH 3+1 from [ComfyUI-H3-LBH-
 | 14 s singing (640 × 928) | 187.2 s (3 min 7.2 s) | 137.9 s (2 min 17.9 s) | -49.3 s |
 
 5 s, 10 s and singing were measured on 2026-10-14 (one run each); for 14 s the standard run is from 2026-10-13 and the fast run from 2026-10-14. The fast singing run used 448 × 640 → 640 × 928, and the previous workflow took 172.1 s (2 min 52.1 s) in the same session. Compared with LBH 3+1 without the audio pass, it adds about 12 s (5 s: 48.3 → 60.0 s, 14 s: 113.6 → 125.7 s).
+
+## Speed mode
+
+The speed mode is the fast workflow with two changes: the three low-resolution steps run at 256 × 448 instead of 384 × 672, and the last step at 544 × 960 skips 10 of the 50 DiT blocks. The audio pass and lock are unchanged, so the audio is identical to the fast variant. The picture is a different take of the same prompt because the earlier steps run at a different size.
+
+| | Fast (LBH) | Speed |
+|---|---|---|
+| Audio pass | 32 × 32, 8 steps | Same (decoded audio identical to fast) |
+| Steps 1–3 | 384 × 672 | 256 × 448 |
+| Step 4 (544 × 960) | All 50 DiT blocks | Blocks 9–12, 14–18 and 20 skipped |
+| Extra install | LBH X2 Stream, LBH 3D upscaler, F12 cache | Same as fast |
+
+| Video | Fast (LBH) | Speed |
+|---|---:|---:|
+| 5 s | – | 57.3 s |
+| 10 s | – | 77.5 s |
+| 14 s | 131.9 s (2 min 11.9 s) | 102.9 s (1 min 42.9 s) |
+
+Single runs of the packaged examples (seed 43) in one session on 2026-10-22 with ComfyUI 0.42.0. Other applications were using the GPU during this session, and the same 14 s fast example took 125.7 s in an earlier, quieter session, so compare the columns rather than the absolute values.
+
+Choosing the blocks: each block was bypassed alone in the last step (at 256 × 448, 14 s, seed 48) and the change of the resulting video latent was measured, following the vital-layer analysis of [Stable Flow](https://arxiv.org/abs/2411.14430). The ten blocks with the smallest change are skipped; blocks 0–2, 29–33, 48 and 49 mattered most. Skipping applies only to the last step, where the audio is already locked. Compared within one run (identical earlier steps), the speed-mode last step differed from the unskipped one by PSNR 24 dB and SSIM 0.85 at 1088 × 1920, while two unskipped last steps differed by 40.9 dB and 0.987. Line sharpness and frame-to-frame flicker did not change, the result looked equally detailed for seeds 48 and 50, and lip sync was judged fine. Ten blocks chosen by a simpler rule (the smallest change of the hidden state, blocks 3–17) lost iris detail, so the choice matters.
 
 ## Generation time
 
@@ -176,6 +200,8 @@ For the fast variant, the F12 Loader prepares F12 (W4A4 FC1 in 12 blocks) under 
 
 The fast variant is in the [5 s](examples/fl2va_audiofirst_lbh_05s.json), [10 s](examples/fl2va_audiofirst_lbh_10s.json) and [14 s](examples/fl2va_audiofirst_lbh_14s.json) workflows. To change the length, set the same `length` on Shared image conditioning and "Audio pass conditioning (32x32)". To change the resolution, give Shared image conditioning low and high sizes with the same aspect ratio in multiples of 32, and set LBH video upscale + continue to the high size. The first run spends extra time preparing F12.
 
+The speed mode is in the [5 s](examples/fl2va_audiofirst_speed_05s.json), [10 s](examples/fl2va_audiofirst_speed_10s.json) and [14 s](examples/fl2va_audiofirst_speed_14s.json) workflows. They are the fast workflows with low size 256 × 448 and "Skip 10 DiT blocks (final step only)" between the model and the step-4 guider; length and resolution follow the fast-variant rules. Bypass that node to run the last step with all blocks.
+
 All examples use seed 43, res_multistep/simple, video/audio sigma shift 12/3, 24 fps and CQ18. Output goes to ComfyUI's output/H3_AudioFirst_X2_Stream.
 
 ### Nodes
@@ -185,6 +211,7 @@ All examples use seed 43, res_multistep/simple, video/audio sigma shift 12/3, 24
 | H3 AudioFirst 32x32 Audio Conditioning | Reuses the video-pass conditioning and makes a 32 × 32 keyframe and empty latent; the TE is not run again |
 | H3 AudioFirst Lock Audio | Inserts the finished audio latent into the video-pass latent with an audio noise mask of 0 |
 | H3 AudioFirst Check Audio Lock | Stops if the audio latent after the video pass differs from the audio pass |
+| H3 AudioFirst Skip Blocks (final step) | Bypasses the listed DiT blocks (default 9–12, 14–18, 20); connect it only to the last step's guider |
 
 As in native H3 first-frame handling, the audio-pass keyframe is the input image resized to 32 × 32 without cropping. It only conditions the audio and does not affect the output picture.
 
@@ -193,6 +220,8 @@ As in native H3 first-frame handling, the audio-pass keyframe is the input image
 [docs/benchmark.json](docs/benchmark.json) records each run's prompt_id, SHA-256 of prompt, workflow and video, stage times and how the step count was chosen.
 
 The 5, 10 and 14 s AudioFirst values come from running the packaged examples with only the output name changed (the singing run changed only the image, prompt and crop of the 14 s example). The two 5 s runs produced identical decoded audio, and every run passed the audio-lock check. A 6-step check made when the nodes were renamed for distribution gave audio identical to the experiment and video differing by the same amount the experiment runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup. See [docs/validation.json](docs/validation.json).
+
+Speed mode: the 14 s example run with seed 48 gave decoded audio identical to the experiment it came from, and the 14 s speed and fast examples (seed 43) gave identical decoded audio. It has not been through a fresh-install test yet.
 
 ComfyUI input validation and GUI/API round-trips pass for all examples; tests cover repeated setup, refusal to overwrite differing files and the example settings.
 
