@@ -225,7 +225,7 @@ setup.bat "C:\ComfyUI\ComfyUI" "C:\ComfyUI\.venv\Scripts\python.exe" --check
 
 表のAudioFirstの値のうち5・10・14秒は、配布版のexampleを出力名だけ変えて実行したものです（歌は14秒exampleの画像・プロンプト・切り抜きだけを変更）。5秒の2回は音声がデコード後に完全一致し、全runで音声固定を確認しました。ノード名を配布版へ変更した際の6step検証では、音声が実験版と完全一致し、映像は実験版のrun同士の差と同程度（PSNR約25dB）でした。このPCの設定では映像サンプリングがrun間でビット一致しません。[検証記録](docs/validation.json)。
 
-速度優先モード：14秒exampleをseed48で実行した音声は元の実験runとデコード後に完全一致し、速度優先と高速版の14秒example（seed43）の音声も完全一致しました。新規導入試験はまだです。
+速度優先モード：14秒exampleをseed48で実行した音声は元の実験runとデコード後に完全一致し、速度優先と高速版の14秒example（seed43）の音声も完全一致しました。新規cloneしたComfyUI 0.42.0に`--install-dependencies --with-lbh`で導入し、X2準備と速度優先5・10・14秒exampleを無変更で実行して全て成功しました（14秒は既定キャッシュ・セッション初回で102.2秒）。音声は実測runとデコード後に一致しました。
 
 全exampleのComfyUI入力検査とGUI/API往復の一致、setupの再実行・上書き拒否、exampleの設定値を確認しています。
 

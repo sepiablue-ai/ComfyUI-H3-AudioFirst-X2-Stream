@@ -115,6 +115,46 @@
         "lbh_14s": "not compared: example prompt uses the revised fourth line"
       },
       "timing_note": "lbh_10s 93.5 s and lbh_14s 125.4 s match the measured 93.5 s and 125.7 s"
+    },
+    {
+      "label": "speed mode, fresh ComfyUI 0.42.0, repository cloned from the local commit 4ceed3d",
+      "date": "2026-10-22",
+      "comfyui": {
+        "source": "git clone https://github.com/Comfy-Org/ComfyUI.git (master)",
+        "commit": "1a82e6d01f395b43275c77acd289af1eb7090bb9",
+        "version": "0.42.0"
+      },
+      "python": "Dedicated uv venv (Python 3.13.13, created with pip). PyTorch 2.14.0+cu130, comfy-kitchen 0.2.39 and comfy-aimdo 0.5.6 referenced read-only from the developer's standard venv; only comfyui-frontend-package 1.57.1 and the workflow templates were added to the dedicated venv. The standard venv was unchanged.",
+      "setup": "setup.bat \"COMFY_ROOT\" --install-dependencies --with-lbh; Python auto-detected; X2 Stream eb148a3 and LBH X2 Stream 070b78c downloaded; 4 AudioFirst nodes (including H3AudioFirstSkipBlocks) and 6 LBH nodes registered; upscaler and 5 models found; core files unchanged",
+      "models": "extra_model_paths.yaml pointing read-only at the developer's model folders; the X2 INT8 VAE and the F12 cache were prepared inside the fresh ComfyUI",
+      "server": "CUDA_VISIBLE_DEVICES=0, --disable-pinned-memory, default ComfyUI cache, new process on port 8204",
+      "examples_run_unchanged": [
+        {
+          "example": "00_prepare_x2.api.json",
+          "prompt_id": "4f45da31-f6b1-4a9e-be10-aec4cd1e3dae",
+          "status": "success",
+          "generation_seconds": 10.395
+        },
+        {
+          "example": "fl2va_audiofirst_speed_05s.api.json",
+          "prompt_id": "ef71003b-89e1-4778-b800-eb3fe9d42a24",
+          "status": "success",
+          "generation_seconds": 92.435
+        },
+        {
+          "example": "fl2va_audiofirst_speed_10s.api.json",
+          "prompt_id": "1286537a-6561-4f27-a5cc-e856af6164b2",
+          "status": "success",
+          "generation_seconds": 79.217
+        },
+        {
+          "example": "fl2va_audiofirst_speed_14s.api.json",
+          "prompt_id": "abb624f8-3091-4c5b-8f64-c4d380ddcdae",
+          "status": "success",
+          "generation_seconds": 102.2
+        }
+      ],
+      "notes": "The first 5 s run includes F12 preparation and the first model loads. Decoded audio of the 5, 10 and 14 s outputs is identical to the measured speed-mode runs. Browser drag-and-drop was not tested."
     }
   ]
 }

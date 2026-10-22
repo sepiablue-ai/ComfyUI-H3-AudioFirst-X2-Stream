@@ -225,7 +225,7 @@ As in native H3 first-frame handling, the audio-pass keyframe is the input image
 
 The 5, 10 and 14 s AudioFirst values come from running the packaged examples with only the output name changed (the singing run changed only the image, prompt and crop of the 14 s example). The two 5 s runs produced identical decoded audio, and every run passed the audio-lock check. A 6-step check made when the nodes were renamed for distribution gave audio identical to the experiment and video differing by the same amount the experiment runs differ from each other (PSNR about 25 dB); video sampling is not bit-reproducible between runs on this setup. See [docs/validation.json](docs/validation.json).
 
-Speed mode: the 14 s example run with seed 48 gave decoded audio identical to the experiment it came from, and the 14 s speed and fast examples (seed 43) gave identical decoded audio. It has not been through a fresh-install test yet.
+Speed mode: the 14 s example run with seed 48 gave decoded audio identical to the experiment it came from, and the 14 s speed and fast examples (seed 43) gave identical decoded audio. A fresh clone of ComfyUI 0.42.0 set up with `--install-dependencies --with-lbh` ran X2 preparation and the speed 5, 10 and 14 s examples unchanged (14 s: 102.2 s on the default cache, first run of the session); decoded audio matched the measured runs.
 
 ComfyUI input validation and GUI/API round-trips pass for all examples; tests cover repeated setup, refusal to overwrite differing files and the example settings.
 
