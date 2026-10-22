@@ -2,24 +2,27 @@
 
 English | [日本語](README_ja.md)
 
-**ComfyUI nodes that reduce the "talking inside a metal pipe" voice of fast MiniMax H3 settings. The fast (LBH) variant improves the audio and is still faster than before.**
+**Generate a 14-second 1088 × 1920 MiniMax H3 video with audio in 99.8 s on an RTX 4070 12 GB.**
 
-Measured on an RTX 4070 12 GB, 1088 × 1920 video with audio:
+| Video (1088 × 1920, with audio) | Before (X2 Stream 4-step) | **AudioFirst speed** |
+|---|---:|---:|
+| 5 s | 60.8 s (1 min 0.8 s) | **52.7 s** |
+| 10 s | 105.7 s (1 min 45.7 s) | **77.1 s (1 min 17.1 s)** |
+| 14 s | 153.8 s (2 min 33.8 s) | **99.8 s (1 min 39.8 s)** |
+
+- **About 35% faster than before**: 14 s, 153.8 s → 99.8 s; 10 s about 27% and 5 s about 13% faster.
+- **About 21% faster than the fast (LBH) variant in the same session**: 14 s, 126.0 s → 99.8 s.
+- **Other images and prompts stay near 100 s**: three 14 s anime clips at 1280 × 1856 took 104.7–105.3 s (fast variant: 134.8–136.7 s).
+- **The audio improves as well**: the voice is generated first and locked, which reduces the "talking inside a metal pipe" sound of fast settings.
 
 | 14 s dialogue video | Generation time | Audio |
 |---|---:|---|
 | Before (X2 Stream 4-step) | 153.8 s (2 min 33.8 s) | Often metallic |
 | AudioFirst standard | 165.1 s (2 min 45.1 s) | Improved |
 | AudioFirst fast (LBH) | 125.7 s (2 min 5.7 s) | Improved |
-| **AudioFirst speed (new)** | **99.8 s (1 min 39.8 s)** | **Improved (same audio as fast)** |
+| **AudioFirst speed** | **99.8 s (1 min 39.8 s)** | **Improved (same audio as fast)** |
 
-- **About 18% faster, with better audio**: 14 s dialogue, 153.8 s → 125.7 s (-28.1 s).
-- **About 20% faster in a same-session comparison**: 14 s singing with guitar (640 × 928), 172.1 s before → 137.9 s fast.
-- **No slower at 5 s**: the fast variant takes 60.0 s, about the same as before (about 60.8 s), with better audio.
-- **Standard keeps the picture unchanged**: the video pass is identical to before; only the audio is replaced (about 11 s added).
-- **New speed mode: 14 s in under 100 s with the same audio as fast**: 99.8 s against 126.0 s for fast in the same session (-20.8%); 5 s 52.7 s, 10 s 77.1 s. See [Speed mode](#speed-mode).
-
-"Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means); the rows above were measured on different days and include a few seconds of day-to-day variation. See [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
+"Before" is the 4-step FL2VA workflow bundled with [ComfyUI-H3-X2-Stream](https://github.com/sepiablue-ai/ComfyUI-H3-X2-Stream) (4 steps at 544 × 960, SLA 5%). Values are single runs (some are two-run means) on an RTX 4070 12 GB at 150 W. The speed mode was measured on 2026-10-22 with ComfyUI 0.42.0, the other rows on 2026-10-11 to 14 with ComfyUI 0.38.0, so comparisons across rows include a few seconds of day-to-day variation. See [Speed mode](#speed-mode), [Generation time](#generation-time) and the [measurement record](docs/benchmark.json) for conditions.
 
 > Author: Kamimoto (かみもと) | Quick results on **[X (@sep_is_heim)](https://x.com/sep_is_heim)**, write-ups (Japanese) on **[note](https://note.com/sepiablue)** ([article index](https://note.com/sepiablue/n/n8e612c619a3e)).
 

@@ -1,7 +1,7 @@
 [project]
 name = "h3-audiofirst-x2-stream"
 version = "0.3.0"
-description = "MiniMax H3 audio-first two-pass generation for ComfyUI: reduces the metallic voice of fast settings by generating audio first and locking it. The fast LBH variant is about 18% faster than the standard 4-step workflow on an RTX 4070 12GB, and the speed mode is about 21% faster again with the same audio (14 s in 99.8 s)."
+description = "MiniMax H3 for ComfyUI: a 14 s 1088x1920 video with audio in 99.8 s on an RTX 4070 12GB (speed mode). The audio is generated first and locked, which also reduces the metallic voice of fast settings."
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.11"
